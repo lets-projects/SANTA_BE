@@ -1,4 +1,4 @@
-package com.example.santa;
+package com.example.santa.domain.mountain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

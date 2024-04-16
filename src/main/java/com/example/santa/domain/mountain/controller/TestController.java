@@ -1,6 +1,8 @@
-package com.example.santa;
+package com.example.santa.domain.mountain.controller;
 
-import org.springframework.stereotype.Controller;
+import com.example.santa.domain.mountain.entity.Mountain;
+import com.example.santa.domain.mountain.dto.TestDto;
+import com.example.santa.domain.mountain.service.TestService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

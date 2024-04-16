@@ -1,5 +1,8 @@
-package com.example.santa;
+package com.example.santa.domain.mountain.service;
 
+import com.example.santa.domain.mountain.dto.TestDto;
+import com.example.santa.domain.mountain.entity.Mountain;
+import com.example.santa.domain.mountain.repository.TestRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
