@@ -1,4 +1,4 @@
-package com.example.santa;
+package com.example.santa.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

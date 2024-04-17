@@ -1,6 +1,6 @@
-package com.example.santa;
+package com.example.santa.test;
 
-import org.springframework.stereotype.Controller;
+import com.example.santa.Mountain;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

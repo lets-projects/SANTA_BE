@@ -1,5 +1,6 @@
-package com.example.santa;
+package com.example.santa.test;
 
+import com.example.santa.Mountain;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
