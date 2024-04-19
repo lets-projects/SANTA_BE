@@ -1,8 +1,14 @@
+<<<<<<<< HEAD:src/main/java/com/example/santa/test/TestService.java
+package com.example.santa.test;
+
+import com.example.santa.Mountain;
+========
 package com.example.santa.domain.mountain.service;
 
 import com.example.santa.domain.mountain.dto.TestDto;
 import com.example.santa.domain.mountain.entity.Mountain;
 import com.example.santa.domain.mountain.repository.TestRepository;
+>>>>>>>> feature/login:src/main/java/com/example/santa/domain/mountain/service/TestService.java
 import org.springframework.stereotype.Service;
 
 import java.util.List;
