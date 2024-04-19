@@ -1,4 +1,4 @@
-package com.example.santa.challege.dto;
+package com.example.santa.domain.challege.dto;
 
 import lombok.*;
 

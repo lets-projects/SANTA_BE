@@ -1,9 +1,9 @@
-package com.example.santa.challege.controller;
+package com.example.santa.domain.challege.controller;
 
-import com.example.santa.challege.dto.ChallengeCreateDto;
-import com.example.santa.challege.dto.ChallengeResponseDto;
-import com.example.santa.challege.entity.Challenge;
-import com.example.santa.challege.service.ChallengeService;
+import com.example.santa.domain.challege.dto.ChallengeCreateDto;
+import com.example.santa.domain.challege.dto.ChallengeResponseDto;
+import com.example.santa.domain.challege.entity.Challenge;
+import com.example.santa.domain.challege.service.ChallengeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

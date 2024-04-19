@@ -1,11 +1,8 @@
-package com.example.santa.challege.repository;
+package com.example.santa.domain.challege.repository;
 
-import com.example.santa.challege.entity.Challenge;
-import org.hibernate.query.Page;
+import com.example.santa.domain.challege.entity.Challenge;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.awt.print.Pageable;
 
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge,Long> {

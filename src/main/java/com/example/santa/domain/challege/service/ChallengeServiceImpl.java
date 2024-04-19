@@ -1,10 +1,10 @@
-package com.example.santa.challege.service;
+package com.example.santa.domain.challege.service;
 
-import com.example.santa.challege.dto.ChallengeCreateDto;
-import com.example.santa.challege.dto.ChallengeResponseDto;
-import com.example.santa.challege.entity.Challenge;
-import com.example.santa.challege.mapper.ChallengeMapper;
-import com.example.santa.challege.repository.ChallengeRepository;
+import com.example.santa.domain.challege.dto.ChallengeCreateDto;
+import com.example.santa.domain.challege.dto.ChallengeResponseDto;
+import com.example.santa.domain.challege.entity.Challenge;
+import com.example.santa.domain.challege.mapper.ChallengeMapper;
+import com.example.santa.domain.challege.repository.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

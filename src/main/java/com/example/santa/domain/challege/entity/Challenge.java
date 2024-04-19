@@ -1,4 +1,4 @@
-package com.example.santa.challege.entity;
+package com.example.santa.domain.challege.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,7 +1,6 @@
 package com.example.santa.userchallenge.entity;
 
-import com.example.santa.challege.dto.ChallengeResponseDto;
-import com.example.santa.challege.entity.Challenge;
+import com.example.santa.domain.challege.entity.Challenge;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
