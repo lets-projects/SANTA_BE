@@ -1,8 +1,8 @@
-package com.example.santa.category.controller;
+package com.example.santa.domain.category.controller;
 
-import com.example.santa.category.dto.CreateDto;
-import com.example.santa.category.entity.Category;
-import com.example.santa.category.service.CategoryService;
+import com.example.santa.domain.category.dto.CreateDto;
+import com.example.santa.domain.category.entity.Category;
+import com.example.santa.domain.category.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,8 +1,7 @@
-package com.example.santa.category.service;
+package com.example.santa.domain.category.service;
 
-import com.example.santa.category.dto.CreateDto;
-import com.example.santa.category.entity.Category;
-import com.example.santa.category.repository.CategoryRepository;
+import com.example.santa.domain.category.entity.Category;
+import com.example.santa.domain.category.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.santa.category.dto;
+package com.example.santa.domain.category.dto;
 
 import lombok.Getter;
 import lombok.Setter;

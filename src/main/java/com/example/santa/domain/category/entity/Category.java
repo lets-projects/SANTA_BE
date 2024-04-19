@@ -1,4 +1,4 @@
-package com.example.santa.category.entity;
+package com.example.santa.domain.category.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

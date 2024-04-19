@@ -1,6 +1,6 @@
-package com.example.santa.category.repository;
+package com.example.santa.domain.category.repository;
 
-import com.example.santa.category.entity.Category;
+import com.example.santa.domain.category.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
