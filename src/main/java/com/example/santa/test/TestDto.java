@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/com/example/santa/test/TestDto.java
 package com.example.santa.test;
+========
+package com.example.santa.domain.mountain.dto;
+>>>>>>>> feature/login:src/main/java/com/example/santa/domain/mountain/dto/TestDto.java
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

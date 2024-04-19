@@ -1,4 +1,4 @@
-package com.example.santa;
+package com.example.santa.domain.mountain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
