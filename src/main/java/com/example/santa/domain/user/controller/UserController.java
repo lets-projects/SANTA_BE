@@ -1,9 +1,9 @@
 package com.example.santa.domain.user.controller;
 
-import com.example.santa.domain.user.dto.PasswordChangeDto;
+import com.example.santa.domain.user.dto.PasswordChangeRequestDto;
 import com.example.santa.domain.user.dto.UserResponseDto;
 import com.example.santa.domain.user.dto.UserSignupRequestDto;
-import com.example.santa.domain.user.dto.UserUpdateDto;
+import com.example.santa.domain.user.dto.UserUpdateRequestDto;
 import com.example.santa.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -80,8 +80,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable(name = "id") Long id, @RequestBody UserUpdateDto userUpdateDto) {
-        UserResponseDto updateUser = userService.updateUser(id, userUpdateDto);
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable(name = "id") Long id, @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
+        UserResponseDto updateUser = userService.updateUser(id, userUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
 
@@ -90,10 +90,11 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
-    public ResponseEntity<Long> changePassword(@PathVariable(name = "id") Long id, @RequestBody PasswordChangeDto passwordChangeDto) {
+    public ResponseEntity<Long> changePassword(@PathVariable(name = "id") Long id, @RequestBody @Valid PasswordChangeRequestDto passwordChangeRequestDto) {
         Long changePassword = userService.changePassword(id
-                , passwordChangeDto.getOldPassword(), passwordChangeDto.getNewPassword());
+                , passwordChangeRequestDto.getOldPassword(), passwordChangeRequestDto.getNewPassword());
         return ResponseEntity.status(HttpStatus.OK).body(changePassword);
     }
+
 
 }

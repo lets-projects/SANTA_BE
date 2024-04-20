@@ -2,7 +2,7 @@ package com.example.santa.domain.user.service;
 
 import com.example.santa.domain.user.dto.UserResponseDto;
 import com.example.santa.domain.user.dto.UserSignupRequestDto;
-import com.example.santa.domain.user.dto.UserUpdateDto;
+import com.example.santa.domain.user.dto.UserUpdateRequestDto;
 import com.example.santa.domain.user.entity.Password;
 import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
@@ -75,16 +75,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UserUpdateDto userUpdateDto) {
-        if (userRepository.existsByNickname(userUpdateDto.getNickname())) {
+    public UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto) {
+        if (userRepository.existsByNickname(userUpdateRequestDto.getNickname())) {
             throw new EntityExistsException("닉네임 중복입니다");
         }
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userId=" + id))
-                .update(userUpdateDto.getName()
-                        , userUpdateDto.getNickname()
-                        , userUpdateDto.getPhoneNumber()
-                        , userUpdateDto.getImage());
+                .update(userUpdateRequestDto.getName()
+                        , userUpdateRequestDto.getNickname()
+                        , userUpdateRequestDto.getPhoneNumber()
+                        , userUpdateRequestDto.getImage());
 
         return userResponseDtoMapper.toDto(user);
     }
