@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,7 +61,7 @@ public class ChallengeController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
     @PostMapping
-    public ResponseEntity<ChallengeResponseDto> createChallenge(@RequestBody ChallengeCreateDto challengeCreateDto) {
+    public ResponseEntity<ChallengeResponseDto> createChallenge(@RequestBody @Valid ChallengeCreateDto challengeCreateDto) {
         ChallengeResponseDto savedChallenge = challengeService.saveChallenge(challengeCreateDto);
         return ResponseEntity.ok(savedChallenge);
     }
@@ -70,7 +71,7 @@ public class ChallengeController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
     @PatchMapping("/{id}")
-    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable(name = "id") Long id, @RequestBody ChallengeCreateDto challengeCreateDto) {
+    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable(name = "id") Long id, @RequestBody @Valid ChallengeCreateDto challengeCreateDto) {
         ChallengeResponseDto updatedChallenge = challengeService.updateChallenge(id, challengeCreateDto);
         return ResponseEntity.ok(updatedChallenge);
     }
