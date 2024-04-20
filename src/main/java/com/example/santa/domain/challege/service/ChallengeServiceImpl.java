@@ -6,10 +6,14 @@ import com.example.santa.domain.challege.entity.Challenge;
 import com.example.santa.global.util.mapsturct.ChallengeResponseMapper;
 import com.example.santa.domain.challege.repository.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ChallengeServiceImpl implements ChallengeService{
@@ -37,20 +41,13 @@ public class ChallengeServiceImpl implements ChallengeService{
         return challengeResponseMapper.toDto(save);
     }
 
-//    @Override
-//    public List<ChallengeResponseDto> findAllChallenges() {
-//        List<Challenge> challenges = challengeRepository.findAll();
-//        List<ChallengeResponseDto> challengeDtos = new ArrayList<>();
-//        for (Challenge challenge : challenges) {
-//            challengeDtos.add(challengeMapper.entityToDto(challenge));
-//        }
-//        return challengeDtos;
-//    }
 
     @Override
-    public List<Challenge> findAllChallenges() {
-        return challengeRepository.findAll();
+    public Page<ChallengeResponseDto> findAllChallenges(Pageable pageable){
+        Page<Challenge> challenges =challengeRepository.findAll(pageable);
+        return challenges.map(challengeResponseMapper::toDto);
     }
+
 
     @Override
     public ChallengeResponseDto findChallengeById(Long id) {
@@ -81,3 +78,19 @@ public class ChallengeServiceImpl implements ChallengeService{
         challengeRepository.deleteById(id);
     }
 }
+
+
+//    @Override
+//    public List<ChallengeResponseDto> findAllChallenges() {
+//        List<Challenge> challenges = challengeRepository.findAll();
+//        List<ChallengeResponseDto> challengeDtos = new ArrayList<>();
+//        for (Challenge challenge : challenges) {
+//            challengeDtos.add(challengeResponseMapper.toDto(challenge));
+//        }
+//        return challengeDtos;
+//    }
+
+//    @Override
+//    public List<Challenge> findAllChallenges() {
+//        return challengeRepository.findAll();
+//    }
