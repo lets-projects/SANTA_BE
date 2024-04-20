@@ -1,6 +1,7 @@
-package com.example.santa.userchallenge.entity;
+package com.example.santa.domain.userchallenge.entity;
 
 import com.example.santa.domain.challege.entity.Challenge;
+import com.example.santa.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,9 +33,9 @@ public class UserChallenge {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 }

@@ -24,6 +24,4 @@ public class ChallengeCreateDto {
     private Integer clearStandard;
 
     private String image;
-
-//    private String progress;
 }
