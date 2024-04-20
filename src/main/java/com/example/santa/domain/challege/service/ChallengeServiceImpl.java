@@ -95,48 +95,48 @@ public class ChallengeServiceImpl implements ChallengeService{
     }
 
 
-    @Transactional
-    public UserChallengeResponseDto updateUserChallengeProgress(Long userId, Long challengeId, String progress, Boolean isCompleted) {
-        // 사용자와 챌린지를 찾는 로직 구현
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(() -> new RuntimeException("Challenge not found"));
-
-        UserChallenge userChallenge = userChallengeRepository.findByUserAndChallenge(user, challenge)
-                .orElse(new UserChallenge());
-
-        userChallenge.setUser(user);
-        userChallenge.setChallenge(challenge);
-        userChallenge.setProgress(progress);
-        userChallenge.setIsCompleted(isCompleted);
-
-        // 완료 여부에 따른 완료 날짜 처리
-        if (isCompleted) {
-            userChallenge.setCompletionDate(new Date());
-        } else {
-            userChallenge.setCompletionDate(null);
-        }
-
-        userChallengeRepository.save(userChallenge);
-
-        // DTO로 변환하여 반환
-        return  userChallengeResponseMapper.toDto(userChallenge);
-    }
-
-    private UserChallengeDto userChallengeToDto(UserChallenge userChallenge) {
-        UserChallengeDto dto = new UserChallengeDto();
-        dto.setProgress(userChallenge.getProgress());
-        dto.setIsCompleted(userChallenge.getIsCompleted());
-        dto.setCompletionDate(userChallenge.getCompletionDate());
-        // 필요한 다른 필드들도 여기에 추가
-        return dto;
-    }
-
-    // 사용자가 참여중인 챌린지 조회, 이때 진행도와 완료 여부도 함께 보여줌
-    @Transactional(readOnly = true)
-    public List<UserChallengeDto> getUserChallenges(Long userId) {
-        List<UserChallenge> userChallenges = userChallengeRepository.findByUserId(userId);
-        return userChallenges.stream().map(this::userChallengeToDto).collect(Collectors.toList());
-    }
+//    @Transactional
+//    public UserChallengeResponseDto updateUserChallengeProgress(Long userId, Long challengeId, String progress, Boolean isCompleted) {
+//        // 사용자와 챌린지를 찾는 로직 구현
+//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+//        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(() -> new RuntimeException("Challenge not found"));
+//
+//        UserChallenge userChallenge = userChallengeRepository.findByUserAndChallenge(user, challenge)
+//                .orElse(new UserChallenge());
+//
+//        userChallenge.setUser(user);
+//        userChallenge.setChallenge(challenge);
+//        userChallenge.setProgress(progress);
+//        userChallenge.setIsCompleted(isCompleted);
+//
+//        // 완료 여부에 따른 완료 날짜 처리
+//        if (isCompleted) {
+//            userChallenge.setCompletionDate(new Date());
+//        } else {
+//            userChallenge.setCompletionDate(null);
+//        }
+//
+//        userChallengeRepository.save(userChallenge);
+//
+//        // DTO로 변환하여 반환
+//        return  userChallengeResponseMapper.toDto(userChallenge);
+//    }
+//
+//    private UserChallengeDto userChallengeToDto(UserChallenge userChallenge) {
+//        UserChallengeDto dto = new UserChallengeDto();
+//        dto.setProgress(userChallenge.getProgress());
+//        dto.setIsCompleted(userChallenge.getIsCompleted());
+//        dto.setCompletionDate(userChallenge.getCompletionDate());
+//        // 필요한 다른 필드들도 여기에 추가
+//        return dto;
+//    }
+//
+//    // 사용자가 참여중인 챌린지 조회, 이때 진행도와 완료 여부도 함께 보여줌
+//    @Transactional(readOnly = true)
+//    public List<UserChallengeDto> getUserChallenges(Long userId) {
+//        List<UserChallenge> userChallenges = userChallengeRepository.findByUserId(userId);
+//        return userChallenges.stream().map(this::userChallengeToDto).collect(Collectors.toList());
+//    }
 
 }
 
