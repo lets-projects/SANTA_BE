@@ -1,10 +1,15 @@
 package com.example.santa.domain.meeting.controller;
 
 import com.example.santa.domain.meeting.dto.MeetingDto;
-import com.example.santa.domain.meeting.entity.Meeting;
+import com.example.santa.domain.meeting.dto.UserIdDto;
+import com.example.santa.domain.meeting.entity.Participant;
 import com.example.santa.domain.meeting.service.MeetingService;
+import com.example.santa.domain.user.service.UserServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/meetings")
@@ -26,6 +31,13 @@ public class MeetingController {
     public ResponseEntity<MeetingDto> meetingDetail(@PathVariable(name = "meetingId") Long id){
 
         return ResponseEntity.ok(meetingService.meetingDetail(id));
+
+    }
+
+    @PostMapping("{meetingId}/participants")
+    public ResponseEntity<?> joinMeeting(@PathVariable(name = "meetingId") Long id, @RequestBody UserIdDto user){
+        meetingService.joinMeeting(id, user.getUserId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "성공적으로 참가되었습니다."));
 
     }
 }

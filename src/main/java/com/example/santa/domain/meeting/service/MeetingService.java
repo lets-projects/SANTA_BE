@@ -14,6 +14,8 @@ import com.example.santa.domain.meeting.repository.ParticipantRepository;
 import com.example.santa.domain.meeting.repository.TagRepository;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
+import com.example.santa.global.exception.ExceptionCode;
+import com.example.santa.global.exception.ServiceLogicException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,9 +45,9 @@ public class MeetingService {
 
     public MeetingDto createMeeting(MeetingDto meetingDto){
         Category category = categoryRepository.findByName(meetingDto.getCategoryName())
-                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
         User leader = userRepository.findById(meetingDto.getLeaderId())
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
 
 
         Meeting meeting = Meeting.builder()
@@ -94,8 +96,34 @@ public class MeetingService {
 
     public MeetingDto meetingDetail(Long id){
         Meeting meeting = meetingRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("모임을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
         return convertToDto(meeting);
+    }
+
+    public Participant joinMeeting(Long id, Long userId) {
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        // 이미 참여중인지 확인
+        boolean isAlreadyParticipant = meeting.getParticipant().stream()
+                .anyMatch(participant -> participant.getUser().getId().equals(userId));
+
+        if (isAlreadyParticipant) {
+            // 이미 참여중인 경우 예외 발생 또는 적절한 처리
+            throw new ServiceLogicException(ExceptionCode.ALREADY_PARTICIPATING);
+        }
+
+        Participant participant = Participant.builder()
+                .user(user)
+                .meeting(meeting)
+                .isLeader(false)
+                .build();
+        List<Participant> participants = meeting.getParticipant();
+        participants.add(participantRepository.save(participant));
+
+        return participant;
     }
 
     public MeetingDto convertToDto(Meeting meeting) {
