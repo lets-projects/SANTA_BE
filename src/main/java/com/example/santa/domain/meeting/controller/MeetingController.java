@@ -59,14 +59,19 @@ public class MeetingController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<MeetingDto>> getMeetingsByTag(@RequestParam(name = "tags", required = false) String tagName) {
+    @GetMapping("/tag-search")
+    public ResponseEntity<List<MeetingDto>> getMeetingsByTag(@RequestParam(name = "tag") String tagName) {
         if (tagName != null) {
             List<MeetingDto> meetings = meetingService.findMeetingsByTagName(tagName);
             return ResponseEntity.ok(meetings);
         } else {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping("/category-search")
+    public List<MeetingDto> getMeetingsByCategoryName(@RequestParam(name = "category") String category) {
+        return meetingService.getMeetingsByCategoryName(category);
     }
 
 }

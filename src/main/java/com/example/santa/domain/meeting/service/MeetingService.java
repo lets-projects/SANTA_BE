@@ -182,6 +182,11 @@ public class MeetingService {
         return meetings.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    public List<MeetingDto> getMeetingsByCategoryName(String categoryName) {
+        List<Meeting> meetings = meetingRepository.findByCategory_Name(categoryName);
+        return meetings.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     public MeetingDto convertToDto(Meeting meeting) {
         MeetingDto meetingDto = new MeetingDto();
         meetingDto.setMeetingId(meeting.getId());

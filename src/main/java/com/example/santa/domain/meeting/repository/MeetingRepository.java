@@ -10,4 +10,6 @@ import java.util.List;
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     @Query("SELECT m FROM Meeting m JOIN m.meetingTags mt JOIN mt.tag t WHERE t.name = :tagName")
     List<Meeting> findByTagName(@Param("tagName") String tagName);
+
+    List<Meeting> findByCategory_Name(String categoryName);
 }
