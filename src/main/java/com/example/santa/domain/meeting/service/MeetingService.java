@@ -16,6 +16,7 @@ import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -133,6 +134,7 @@ public class MeetingService {
 
     }
 
+    @Transactional
     public MeetingDto updateMeeting(Long id, MeetingDto meetingDto) {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
@@ -150,7 +152,7 @@ public class MeetingService {
         meetingRepository.save(meeting);
 
         Set<MeetingTag> meetingTags = new HashSet<>();
-
+        meetingTagRepository.deleteByMeeting(meeting);
         for (String tagName : meetingDto.getTags()) {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseGet(() -> tagRepository.save(Tag.builder()
@@ -173,6 +175,11 @@ public class MeetingService {
             throw new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND);
         }
         meetingRepository.deleteById(id);
+    }
+
+    public List<MeetingDto> findMeetingsByTagName(String tagName) {
+        List<Meeting> meetings = meetingRepository.findByTagName(tagName);
+        return meetings.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     public MeetingDto convertToDto(Meeting meeting) {

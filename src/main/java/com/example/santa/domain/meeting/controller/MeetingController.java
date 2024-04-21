@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -56,6 +57,16 @@ public class MeetingController {
     public ResponseEntity<?> deleteMeeting(@PathVariable(name = "meetingId") Long id) {
         meetingService.deleteMeeting(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MeetingDto>> getMeetingsByTag(@RequestParam(name = "tags", required = false) String tagName) {
+        if (tagName != null) {
+            List<MeetingDto> meetings = meetingService.findMeetingsByTagName(tagName);
+            return ResponseEntity.ok(meetings);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
