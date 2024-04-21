@@ -22,13 +22,9 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody @Valid CreateDto createDto) {
-        try {
-            String name = createDto.getName();
-            Category category = categoryService.createCategory(name);
-            return new ResponseEntity<>(category, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String name = createDto.getName();
+        Category category = categoryService.createCategory(name);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -38,13 +34,9 @@ public class CategoryController {
 
     @PatchMapping("/{categoryId}")
     public ResponseEntity<?> updateCategory(@PathVariable Long categoryId, @RequestBody @Valid CreateDto createDto) {
-        try {
-            String name = createDto.getName();
-            Category category = categoryService.updateCategory(categoryId, name);
-            return new ResponseEntity<>(category, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String name = createDto.getName();
+        Category category = categoryService.updateCategory(categoryId, name);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{categoryId}")
