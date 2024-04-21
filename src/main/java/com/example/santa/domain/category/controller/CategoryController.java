@@ -3,6 +3,7 @@ package com.example.santa.domain.category.controller;
 import com.example.santa.domain.category.dto.CreateDto;
 import com.example.santa.domain.category.entity.Category;
 import com.example.santa.domain.category.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCategory(@RequestBody CreateDto createDto) {
+    public ResponseEntity<?> createCategory(@RequestBody @Valid CreateDto createDto) {
         try {
             String name = createDto.getName();
             Category category = categoryService.createCategory(name);
@@ -36,7 +37,7 @@ public class CategoryController {
     }
 
     @PatchMapping("/{categoryId}")
-    public ResponseEntity<?> updateCategory(@PathVariable Long categoryId, @RequestBody CreateDto createDto) {
+    public ResponseEntity<?> updateCategory(@PathVariable Long categoryId, @RequestBody @Valid CreateDto createDto) {
         try {
             String name = createDto.getName();
             Category category = categoryService.updateCategory(categoryId, name);
