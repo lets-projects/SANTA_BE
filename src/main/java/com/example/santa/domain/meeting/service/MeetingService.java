@@ -133,6 +133,41 @@ public class MeetingService {
 
     }
 
+    public MeetingDto updateMeeting(Long id, MeetingDto meetingDto) {
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
+        Category category = categoryRepository.findByName(meetingDto.getCategoryName())
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
+
+        meeting.setMeetingName(meetingDto.getMeetingName());
+        meeting.setCategory(category);
+        meeting.setMountainName(meetingDto.getMountainName());
+        meeting.setDescription(meetingDto.getDescription());
+        meeting.setHeadcount(meetingDto.getHeadcount());
+        meeting.setDate(meetingDto.getDate());
+        meeting.setImage(meeting.getImage());
+
+        meetingRepository.save(meeting);
+
+        Set<MeetingTag> meetingTags = new HashSet<>();
+
+        for (String tagName : meetingDto.getTags()) {
+            Tag tag = tagRepository.findByName(tagName)
+                    .orElseGet(() -> tagRepository.save(Tag.builder()
+                            .name(tagName)
+                            .build()));
+            MeetingTag meetingTag = MeetingTag.builder()
+                    .tag(tag)
+                    .meeting(meeting)
+                    .build();
+            meetingTags.add(meetingTagRepository.save(meetingTag));
+        }
+
+        meeting.setMeetingTags(meetingTags);
+
+        return convertToDto(meetingRepository.save(meeting));
+    }
+
     public void deleteMeeting(Long id) {
         if (!meetingRepository.existsById(id)) {
             throw new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND);

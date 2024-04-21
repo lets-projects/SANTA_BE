@@ -47,6 +47,11 @@ public class MeetingController {
         return ResponseEntity.ok(meetingService.getAllMeetings());
     }
 
+    @PatchMapping("/{meetingId}")
+    public ResponseEntity<MeetingDto> updateMeeting(@PathVariable(name = "meetingId") Long id, @RequestBody MeetingDto meetingDto) {
+        return ResponseEntity.ok(meetingService.updateMeeting(id, meetingDto));
+    }
+
     @DeleteMapping("/{meetingId}")
     public ResponseEntity<?> deleteMeeting(@PathVariable(name = "meetingId") Long id) {
         meetingService.deleteMeeting(id);
