@@ -126,6 +126,20 @@ public class MeetingService {
         return participant;
     }
 
+    public List<MeetingDto> getAllMeetings(){
+
+        List<Meeting> meetings = meetingRepository.findAll();
+        return meetings.stream().map(this::convertToDto).collect(Collectors.toList());
+
+    }
+
+    public void deleteMeeting(Long id) {
+        if (!meetingRepository.existsById(id)) {
+            throw new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND);
+        }
+        meetingRepository.deleteById(id);
+    }
+
     public MeetingDto convertToDto(Meeting meeting) {
         MeetingDto meetingDto = new MeetingDto();
         meetingDto.setMeetingId(meeting.getId());
