@@ -5,6 +5,7 @@ import com.example.santa.domain.meeting.dto.UserIdDto;
 import com.example.santa.domain.meeting.entity.Participant;
 import com.example.santa.domain.meeting.service.MeetingService;
 import com.example.santa.domain.user.service.UserServiceImpl;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class MeetingController {
     }
 
     @PostMapping
-    public MeetingDto createMeeting(@RequestBody MeetingDto meetingDto){
+    public MeetingDto createMeeting(@RequestBody @Valid MeetingDto meetingDto){
         MeetingDto m = new MeetingDto();
         return m = meetingService.createMeeting(meetingDto);
     }
@@ -49,7 +50,7 @@ public class MeetingController {
     }
 
     @PatchMapping("/{meetingId}")
-    public ResponseEntity<MeetingDto> updateMeeting(@PathVariable(name = "meetingId") Long id, @RequestBody MeetingDto meetingDto) {
+    public ResponseEntity<MeetingDto> updateMeeting(@PathVariable(name = "meetingId") Long id, @RequestBody @Valid MeetingDto meetingDto) {
         return ResponseEntity.ok(meetingService.updateMeeting(id, meetingDto));
     }
 
