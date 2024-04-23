@@ -11,12 +11,14 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserMountainResponseDto {
+public class UserMountainVerifyResponseDto {
     private Long id;
     private Long userId;
-    private Long mountainName;
+    private String mountainName;
     private String mountainLocation;
     private Double userAccumulatedHeight;
+    private Date climbDate;
+    private String location;
     private Double latitude;
     private Double longitude;
 }
