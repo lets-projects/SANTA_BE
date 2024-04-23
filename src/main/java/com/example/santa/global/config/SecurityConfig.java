@@ -22,11 +22,26 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    public final String[] allowedUrls = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/",
+            "/error",
+    };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(
                         request -> request
+                                .requestMatchers(allowedUrls).permitAll()
 //                                .requestMatchers("/api/users/signup").permitAll()
 //                                .requestMatchers("/api/users/sign-in").permitAll()
 //                                .anyRequest().authenticated())

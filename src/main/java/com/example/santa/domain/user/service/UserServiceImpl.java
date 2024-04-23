@@ -13,6 +13,7 @@ import com.example.santa.global.security.jwt.JwtTokenProvider;
 import com.example.santa.global.util.mapsturct.UserResponseDtoMapper;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -79,6 +81,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public JwtToken signIn(UserSignInRequestDto userSignInRequestDto) {
+//        User user = userRepository.findByEmail(userSignInRequestDto.getEmail())
+//                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + userSignInRequestDto.getEmail()));
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(userSignInRequestDto.getEmail(), userSignInRequestDto.getPassword());
         authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -88,11 +92,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto findUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userId=" + id));
+    public UserResponseDto findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
         UserResponseDto dto = userResponseDtoMapper.toDto(user);
-        System.out.println("dto = " + dto.getEmail());
+        log.info("dto = {}", dto);
         return dto;
     }
 

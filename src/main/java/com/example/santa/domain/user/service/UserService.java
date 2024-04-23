@@ -18,7 +18,7 @@ public interface UserService {
     // login
     JwtToken signIn(UserSignInRequestDto userSignInRequestDto);
     // read
-    UserResponseDto findUserById(Long id);
+    UserResponseDto findUserByEmail(String email);
 
     // Users read(관리자)
     Page<UserResponseDto> findAllUser(Pageable pageable);
