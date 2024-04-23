@@ -2,10 +2,7 @@ package com.example.santa.domain.meeting.controller;
 
 import com.example.santa.domain.meeting.dto.MeetingDto;
 import com.example.santa.domain.meeting.dto.MeetingResponseDto;
-import com.example.santa.domain.meeting.dto.UserIdDto;
 import com.example.santa.domain.meeting.service.MeetingService;
-import com.example.santa.global.security.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +18,14 @@ import java.util.Map;
 public class MeetingController {
 
     private final MeetingService meetingService;
-    private final JwtTokenProvider jwt;
 
-    public MeetingController(MeetingService meetingService, JwtTokenProvider jwt) {
+    public MeetingController(MeetingService meetingService) {
         this.meetingService = meetingService;
-        this.jwt = jwt;
     }
 
     @PostMapping
-    public MeetingResponseDto createMeeting(HttpServletRequest request, @RequestBody @Valid MeetingDto meetingDto){
-        String token = jwt.extractToken(request);
-        Authentication authentication = jwt.getAuthentication(token);
+    public MeetingResponseDto createMeeting(@RequestBody @Valid MeetingDto meetingDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         meetingDto.setUserEmail(authentication.getName());
         return meetingService.createMeeting(meetingDto);
     }
@@ -44,9 +38,8 @@ public class MeetingController {
     }
 
     @PostMapping("{meetingId}/participants")
-    public ResponseEntity<?> joinMeeting(@PathVariable(name = "meetingId") Long id, HttpServletRequest request){
-        String token = jwt.extractToken(request);
-        Authentication authentication = jwt.getAuthentication(token);
+    public ResponseEntity<?> joinMeeting(@PathVariable(name = "meetingId") Long id){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         meetingService.joinMeeting(id, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "성공적으로 참가되었습니다."));
