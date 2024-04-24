@@ -34,6 +34,12 @@ public class Password {
 
     }
 
+//    public void findPassword(final String email, final String newRawPassword) {
+//
+//    }
+
+
+
     private boolean isMatches(String rawPassword) {
         return passwordEncoder.matches(rawPassword, encodePassword);
     }

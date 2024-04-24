@@ -50,7 +50,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = String.class)))})
-    public String sendMail(@RequestBody @Valid EmailRequestDto emailRequestDto) throws MessagingException, UnsupportedEncodingException {
+    public String sendEmail(@RequestBody @Valid EmailRequestDto emailRequestDto) throws MessagingException, UnsupportedEncodingException {
         log.info("이메일 인증 이메일: {}", emailRequestDto.getEmail());
         String code = emailSendService.sendSimpleMessage(emailRequestDto.getEmail());
         log.info("인증코드: {}", code);
@@ -109,10 +109,9 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
-    public ResponseEntity<UserResponseDto> findUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserResponseDto userById = userService.findUserByEmail(authentication.getName());
-        return ResponseEntity.status(HttpStatus.OK).body(userById);
+    public ResponseEntity<UserResponseDto> findUser(@AuthenticationPrincipal String email) {
+        UserResponseDto userByEmail = userService.findUserByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(userByEmail);
     }
 
     @GetMapping("")
@@ -136,14 +135,24 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
 
-//    @PatchMapping("/password/{id}")
-//    @Operation(summary = "비밀번호 수정", description = "비밀번호 수정")
+    @PatchMapping("/password")
+    @Operation(summary = "비밀번호 수정", description = "비밀번호 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal String email, @RequestBody @Valid PasswordChangeRequestDto passwordChangeRequestDto) {
+        String changePassword = userService.changePassword(email
+                , passwordChangeRequestDto.getOldPassword(), passwordChangeRequestDto.getNewPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(changePassword);
+    }
+
+    // 비밀번호 찾기 시 인증 이메일 보내고 인증완료 시 새로운 비밀번호 입력
+//    @PostMapping("/password")
+//    @Operation(summary = "비밀번호 찾기", description = "비밀번호 칮기")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
 //            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
-//    public ResponseEntity<Long> changePassword(@PathVariable(name = "id") Long id, @RequestBody @Valid PasswordChangeRequestDto passwordChangeRequestDto) {
-//        Long changePassword = userService.changePassword(id
-//                , passwordChangeRequestDto.getOldPassword(), passwordChangeRequestDto.getNewPassword());
-//        return ResponseEntity.status(HttpStatus.OK).body(changePassword);
+//    public ResponseEntity<String> findPassword(String email, String newPassword) {
+//
 //    }
 }

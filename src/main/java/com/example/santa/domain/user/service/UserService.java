@@ -25,6 +25,7 @@ public interface UserService {
 
     UserResponseDto updateUser(Long id, UserUpdateRequestDto userUpdateRequestDto);
 
-    Long changePassword(Long id, String oldPassword, String newPassword);
+    String changePassword(String email, String oldPassword, String newPassword);
 
+//    String findPassword(String email, String newPassword);
 }

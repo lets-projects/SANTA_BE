@@ -122,10 +122,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long changePassword(Long id, String oldPassword, String newPassword) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userId=" + id));
+    public String changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
         user.getPasswordForChange().changePassword(oldPassword, newPassword);
-        return user.getId();
+        return user.getEmail();
     }
+
+//    @Override
+//    public String findPassword(String email, String newPassword) {
+//
+//    }
 }
