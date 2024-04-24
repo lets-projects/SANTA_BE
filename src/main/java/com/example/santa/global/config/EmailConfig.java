@@ -3,11 +3,13 @@ package com.example.santa.global.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@PropertySource("classpath:application.properties")
 @Configuration
 public class EmailConfig {
 
@@ -43,15 +45,15 @@ public class EmailConfig {
 
     @Bean
     public JavaMailSender javaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
-        mailSender.setDefaultEncoding("UTF-8");
-        mailSender.setJavaMailProperties(getMailproperties());
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
+        javaMailSender.setDefaultEncoding("UTF-8");
+        javaMailSender.setJavaMailProperties(getMailproperties());
 
-        return mailSender;
+        return javaMailSender;
     }
 
     private Properties getMailproperties() {
