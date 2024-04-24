@@ -19,6 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
         config.addAllowedOriginPattern("http://localhost" ); // 수정된 부분
         config.addAllowedOriginPattern("http://localhost:5173" );
+        config.addAllowedOriginPattern("http://localhost:5173/" );
 
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
