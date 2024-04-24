@@ -117,6 +117,15 @@ public class MeetingService {
             throw new ServiceLogicException(ExceptionCode.ALREADY_PARTICIPATING);
         }
 
+        // 이미 같은 날짜에 다른 모임에 참여 중인지 확인
+        boolean isParticipatingOnSameDate = userRepository.findMeetingsByUserId(user.getId()).stream()
+                .anyMatch(m -> m.getDate().equals(meeting.getDate()));
+
+        if (isParticipatingOnSameDate) {
+            // 같은 날짜에 다른 모임에 이미 참여중인 경우 예외 발생
+            throw new ServiceLogicException(ExceptionCode.ALREADY_PARTICIPATING_ON_DATE);
+        }
+
         Participant participant = Participant.builder()
                 .user(user)
                 .meeting(meeting)
@@ -215,6 +224,7 @@ public class MeetingService {
             ParticipantDto participantDto = new ParticipantDto();
             participantDto.setUserId(user.getId());
             participantDto.setUserName(user.getName());
+            participantDto.setUserImage(user.getImage());
 
             // 생성한 ParticipantDto 객체를 리스트에 추가합니다.
             participantDtoList.add(participantDto);
