@@ -94,8 +94,8 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication return
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+//        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
     }
 
     // 토큰정보 검증 메소드
