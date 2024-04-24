@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,9 @@ public class MeetingController {
     }
 
     @PostMapping
-    public MeetingResponseDto createMeeting(@RequestBody @Valid MeetingDto meetingDto){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        meetingDto.setUserEmail(authentication.getName());
+    public MeetingResponseDto createMeeting(@AuthenticationPrincipal String email, @RequestBody @Valid MeetingDto meetingDto){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        meetingDto.setUserEmail(email);
         return meetingService.createMeeting(meetingDto);
     }
 
@@ -39,10 +40,10 @@ public class MeetingController {
     }
 
     @PostMapping("{meetingId}/participants")
-    public ResponseEntity<?> joinMeeting(@PathVariable(name = "meetingId") Long id){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<?> joinMeeting(@AuthenticationPrincipal String email, @PathVariable(name = "meetingId") Long id){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        meetingService.joinMeeting(id, authentication.getName());
+        meetingService.joinMeeting(id, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "성공적으로 참가되었습니다."));
 
     }
