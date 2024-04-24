@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,13 +72,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(checked);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/my")
     @Operation(summary = "마이페이지", description = "마이페이지")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
-    public ResponseEntity<UserResponseDto> findUser(@PathVariable(name = "id") Long id) {
-        UserResponseDto userById = userService.findUserById(id);
+    public ResponseEntity<UserResponseDto> findUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserResponseDto userById = userService.findUserByEmail(authentication.getName());
         return ResponseEntity.status(HttpStatus.OK).body(userById);
     }
 
