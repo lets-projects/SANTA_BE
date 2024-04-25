@@ -4,6 +4,8 @@ import com.example.santa.domain.meeting.dto.MeetingDto;
 import com.example.santa.domain.meeting.dto.MeetingResponseDto;
 import com.example.santa.domain.meeting.service.MeetingService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,7 +29,6 @@ public class MeetingController {
 
     @PostMapping
     public MeetingResponseDto createMeeting(@AuthenticationPrincipal String email, @RequestBody @Valid MeetingDto meetingDto){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         meetingDto.setUserEmail(email);
         return meetingService.createMeeting(meetingDto);
     }
@@ -41,7 +42,6 @@ public class MeetingController {
 
     @PostMapping("{meetingId}/participants")
     public ResponseEntity<?> joinMeeting(@AuthenticationPrincipal String email, @PathVariable(name = "meetingId") Long id){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         meetingService.joinMeeting(id, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "성공적으로 참가되었습니다."));
@@ -49,8 +49,10 @@ public class MeetingController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllMeetings(){
-        return ResponseEntity.ok(meetingService.getAllMeetings());
+    public ResponseEntity<?> getAllMeetings(@RequestParam(name = "page", defaultValue = "0") int page,
+                                            @RequestParam(name = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        return ResponseEntity.ok(meetingService.getAllMeetings(pageRequest));
     }
 
     @PatchMapping("/{meetingId}")
@@ -65,18 +67,30 @@ public class MeetingController {
     }
 
     @GetMapping("/tag-search")
-    public ResponseEntity<List<MeetingResponseDto>> getMeetingsByTag(@RequestParam(name = "tag") String tagName) {
+    public ResponseEntity<?> getMeetingsByTag(@RequestParam(name = "tag") String tagName,
+                                              @RequestParam(name = "page", defaultValue = "0") int page,
+                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         if (tagName != null) {
-            List<MeetingResponseDto> meetings = meetingService.findMeetingsByTagName(tagName);
-            return ResponseEntity.ok(meetings);
+            PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+            return ResponseEntity.ok(meetingService.getMeetingsByTagName(tagName,pageRequest));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/category-search")
-    public List<MeetingResponseDto> getMeetingsByCategoryName(@RequestParam(name = "category") String category) {
-        return meetingService.getMeetingsByCategoryName(category);
+    public ResponseEntity<?> getMeetingsByCategoryName(@RequestParam(name = "category") String category,
+                                                              @RequestParam(name = "page", defaultValue = "0") int page,
+                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        return ResponseEntity.ok(meetingService.getMeetingsByCategoryName(category,pageRequest));
+    }
+
+    @GetMapping("/meetings/participants")
+    public ResponseEntity<?> getAllMeetingsByParticipantCount(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        return ResponseEntity.ok(meetingService.getAllMeetingsByParticipantCount(pageRequest));
     }
 
 }
