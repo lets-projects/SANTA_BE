@@ -48,11 +48,17 @@ public class MeetingController {
 
     }
 
+//    @GetMapping
+//    public ResponseEntity<?> getAllMeetings(@RequestParam(name = "page", defaultValue = "0") int page,
+//                                            @RequestParam(name = "size", defaultValue = "10") int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+//        return ResponseEntity.ok(meetingService.getAllMeetings(pageRequest));
+//    }
+
     @GetMapping
-    public ResponseEntity<?> getAllMeetings(@RequestParam(name = "page", defaultValue = "0") int page,
-                                            @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(meetingService.getAllMeetings(pageRequest));
+    public ResponseEntity<?> getAllMeetings(@RequestParam(name = "lastId", required = false) Long lastId,
+                                            @RequestParam(name = "size", defaultValue = "5") int size) {
+        return ResponseEntity.ok(meetingService.getAllMeetingsNoOffset(lastId, size));
     }
 
     @PatchMapping("/{meetingId}")
@@ -66,39 +72,77 @@ public class MeetingController {
         return ResponseEntity.ok().build();
     }
 
+//    @GetMapping("/tag-search")
+//    public ResponseEntity<?> getMeetingsByTag(@RequestParam(name = "tag") String tagName,
+//                                              @RequestParam(name = "page", defaultValue = "0") int page,
+//                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+//        if (tagName != null) {
+//            PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+//            return ResponseEntity.ok(meetingService.getMeetingsByTagName(tagName,pageRequest));
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
     @GetMapping("/tag-search")
     public ResponseEntity<?> getMeetingsByTag(@RequestParam(name = "tag") String tagName,
-                                              @RequestParam(name = "page", defaultValue = "0") int page,
-                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+                                              @RequestParam(name = "lastId", required = false) Long lastId,
+                                              @RequestParam(name = "size", defaultValue = "5") int size) {
         if (tagName != null) {
-            PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-            return ResponseEntity.ok(meetingService.getMeetingsByTagName(tagName,pageRequest));
+            return ResponseEntity.ok(meetingService.getMeetingsByTagNameNoOffset(tagName, lastId, size));
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
+
+//    @GetMapping("/category-search")
+//    public ResponseEntity<?> getMeetingsByCategoryName(@RequestParam(name = "category") String category,
+//                                                              @RequestParam(name = "page", defaultValue = "0") int page,
+//                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+//        return ResponseEntity.ok(meetingService.getMeetingsByCategoryName(category,pageRequest));
+//    }
+
     @GetMapping("/category-search")
     public ResponseEntity<?> getMeetingsByCategoryName(@RequestParam(name = "category") String category,
-                                                              @RequestParam(name = "page", defaultValue = "0") int page,
-                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(meetingService.getMeetingsByCategoryName(category,pageRequest));
+                                                       @RequestParam(name = "lastId", required = false) Long lastId,
+                                                       @RequestParam(name = "size", defaultValue = "5") int size) {
+        if (category != null) {
+            return ResponseEntity.ok(meetingService.getMeetingsByCategoryNameNoOffset(category, lastId, size));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
+//    @GetMapping("/participants")
+//    public ResponseEntity<?> getAllMeetingsByParticipantCount(@RequestParam(name = "page", defaultValue = "0") int page,
+//                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+//        return ResponseEntity.ok(meetingService.getAllMeetingsByParticipantCount(pageRequest));
+//    }
+
     @GetMapping("/participants")
-    public ResponseEntity<?> getAllMeetingsByParticipantCount(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                              @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(meetingService.getAllMeetingsByParticipantCount(pageRequest));
+    public ResponseEntity<?> getAllMeetingsByParticipantCount(@RequestParam(name = "lastId", required = false) Long lastId,
+                                                              @RequestParam(name = "size", defaultValue = "5") int size) {
+        return ResponseEntity.ok(meetingService.getAllMeetingsByParticipantCountNoOffset(lastId, size));
     }
+
+
+//    @GetMapping("/my-meetings")
+//    public ResponseEntity<?> getMyMeetings(@AuthenticationPrincipal String email,
+//                                           @RequestParam(name = "page", defaultValue = "0") int page,
+//                                           @RequestParam(name = "size", defaultValue = "5") int size) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
+//        return ResponseEntity.ok(meetingService.getMyMeetings(email,pageRequest));
+//    }
 
     @GetMapping("/my-meetings")
     public ResponseEntity<?> getMyMeetings(@AuthenticationPrincipal String email,
-                                           @RequestParam(name = "page", defaultValue = "0") int page,
+                                           @RequestParam(name = "lastId", required = false) Long lastId,
                                            @RequestParam(name = "size", defaultValue = "10") int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(meetingService.getMyMeetings(email,pageRequest));
+        return ResponseEntity.ok(meetingService.getMyMeetingsNoOffset(lastId, size, email));
     }
+
 
 }
