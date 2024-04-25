@@ -91,7 +91,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = Boolean.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Boolean.class)))})
-    public ResponseEntity<Boolean> checkEmailDuplicate(@RequestBody String email) {
+    public ResponseEntity<Boolean> checkEmailDuplicate(@RequestParam(name = "email") String email) {
         Boolean checked = userService.checkEmailDuplicate(email);
         return ResponseEntity.status(HttpStatus.OK).body(checked);
     }
@@ -101,7 +101,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = Boolean.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Boolean.class)))})
-    public ResponseEntity<Boolean> checkNicknameDuplicate(@RequestBody String nickname) {
+    public ResponseEntity<Boolean> checkNicknameDuplicate(@RequestParam(name = "nickname") String nickname) {
         Boolean checked = userService.checkNicknameDuplicate(nickname);
         return ResponseEntity.status(HttpStatus.OK).body(checked);
     }
@@ -148,15 +148,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(changePassword);
     }
 
-    // 비밀번호 찾기 시 인증 이메일 보내고 인증완료 시 새로운 비밀번호 입력
-//    @PostMapping("/password")
-//    @Operation(summary = "비밀번호 찾기", description = "비밀번호 칮기")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
-//            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
-//    public ResponseEntity<String> findPassword(String email, String newPassword) {
-//
-//    }
+//     비밀번호 찾기 시 인증 이메일 보내고 인증완료 시 새로운 비밀번호 입력
+    @PostMapping("/password")
+    @Operation(summary = "비밀번호 찾기", description = "비밀번호 칮기")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+    public ResponseEntity<String> findPassword(@AuthenticationPrincipal String email, @RequestParam(name = "new-password") String newPassword) {
+        String findPassword = userService.findPassword(email, newPassword);
+        return ResponseEntity.status(HttpStatus.OK).body(findPassword);
+    }
 
     //유저 마운틴 전체조회
     @GetMapping("/mountains")
