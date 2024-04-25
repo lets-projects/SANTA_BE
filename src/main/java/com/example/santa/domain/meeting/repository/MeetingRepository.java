@@ -17,4 +17,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     @Query("SELECT m FROM Meeting m LEFT JOIN m.participant p GROUP BY m.id ORDER BY COUNT(p) DESC")
     Page<Meeting> findAllByParticipantCount(Pageable pageable);
+
+    @Query("SELECT m FROM Meeting m JOIN m.participant p WHERE p.user.id = :userId")
+    Page<Meeting> findMeetingsByParticipantUserId(@Param("userId") Long userId, Pageable pageable);
 }

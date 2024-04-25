@@ -204,6 +204,14 @@ public class MeetingService {
         return meetings.map(this::convertToDto);
     }
 
+    public Page<MeetingResponseDto> getMyMeetings(String email, Pageable pageable){
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+
+        Page<Meeting> meetings = meetingRepository.findMeetingsByParticipantUserId(user.getId(), pageable);
+        return meetings.map(this::convertToDto);
+    }
+
     public MeetingResponseDto convertToDto(Meeting meeting) {
         MeetingResponseDto meetingDto = new MeetingResponseDto();
         meetingDto.setMeetingId(meeting.getId());
