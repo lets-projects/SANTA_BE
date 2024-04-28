@@ -50,8 +50,10 @@ public class MeetingService {
     }
 
     public MeetingResponseDto createMeeting(MeetingDto meetingDto){
+        // dto에서 불러온 카테고리명으로 카테고리를 가져옴
         Category category = categoryRepository.findByName(meetingDto.getCategoryName())
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
+        // 현재 로그인 한 유저를 불러옴
         User leader = userRepository.findByEmail(meetingDto.getUserEmail())
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
 
@@ -69,7 +71,7 @@ public class MeetingService {
         meetingRepository.save(meeting);
 
         Set<MeetingTag> meetingTags = new HashSet<>();
-
+        // dto에 있는 해시태그에서 생성되지 않은 해시태그면 생성해주고 생성되어 있으면 가져옴
         for (String tagName : meetingDto.getTags()) {
             Tag tag = tagRepository.findByName(tagName)
                     .orElseGet(() -> tagRepository.save(Tag.builder()
@@ -85,7 +87,7 @@ public class MeetingService {
         meeting.setMeetingTags(meetingTags);
 
         meetingRepository.save(meeting);
-
+        // 모임장을 참가자 목록에 추가해줌
         Participant participant = Participant.builder()
                 .user(leader)
                 .meeting(meeting)
@@ -99,7 +101,6 @@ public class MeetingService {
         return convertToDto(meetingRepository.save(meeting));
 
     }
-
     public MeetingResponseDto meetingDetail(Long id){
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
