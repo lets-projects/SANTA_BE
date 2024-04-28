@@ -138,10 +138,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String findPassword(String email, String newPassword) {
+    public String resetPassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
-        user.getPasswordForChange().findPassword(newPassword);
+        user.getPasswordForChange().resetPassword(newPassword);
         return user.getEmail();
     }
 
