@@ -17,6 +17,7 @@ import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
+import com.example.santa.global.util.mapsturct.ParticipantsDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,14 +40,16 @@ public class MeetingService {
     private final TagRepository tagRepository;
     private final MeetingTagRepository meetingTagRepository;
     private final ParticipantRepository participantRepository;
+    private final ParticipantsDtoMapper participantsDtoMapper;
 
-    public MeetingService(MeetingRepository meetingRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository, MeetingTagRepository meetingTagRepository, ParticipantRepository participantRepository) {
+    public MeetingService(MeetingRepository meetingRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository, MeetingTagRepository meetingTagRepository, ParticipantRepository participantRepository, ParticipantsDtoMapper participantsDtoMapper) {
         this.meetingRepository = meetingRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.tagRepository = tagRepository;
         this.meetingTagRepository = meetingTagRepository;
         this.participantRepository = participantRepository;
+        this.participantsDtoMapper = participantsDtoMapper;
     }
 
     public MeetingResponseDto createMeeting(MeetingDto meetingDto){
@@ -273,6 +276,20 @@ public class MeetingService {
             meetings = meetingRepository.findMeetingsByParticipantUserIdAndIdLessThan(user.getId(),lastId, PageRequest.of(0, size, Sort.by("id").descending()));
         }
         return meetings.map(this::convertToDto);
+    }
+
+    public List<ParticipantDto> endMeeting(String email, Long id) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
+
+//        meeting.setEnd(true);
+//
+//        meetingRepository.save(meeting);
+
+        return participantsDtoMapper.toDtoList(meeting.getParticipant());
+
     }
 
     public MeetingResponseDto convertToDto(Meeting meeting) {
