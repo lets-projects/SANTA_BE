@@ -13,6 +13,7 @@ import com.example.santa.domain.meeting.repository.MeetingRepository;
 import com.example.santa.domain.meeting.repository.MeetingTagRepository;
 import com.example.santa.domain.meeting.repository.ParticipantRepository;
 import com.example.santa.domain.meeting.repository.TagRepository;
+import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.global.exception.ExceptionCode;
@@ -25,10 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,6 +69,7 @@ public class MeetingService {
 
         Meeting meeting = Meeting.builder()
                 .meetingName(meetingDto.getMeetingName())
+                .leader(leader)
                 .category(category)
                 .mountainName(meetingDto.getMountainName())
                 .description(meetingDto.getDescription())
@@ -207,9 +206,17 @@ public class MeetingService {
         return convertToDto(meetingRepository.save(meeting));
     }
 
-    public void deleteMeeting(Long id) {
+    public void deleteMeeting(String email, Long id) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
+
         if (!meetingRepository.existsById(id)) {
             throw new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND);
+        }
+        if (!Objects.equals(user.getId(), meeting.getLeader().getId()) || user.getRole() == Role.ADMIN){
+            throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER);
         }
         meetingRepository.deleteById(id);
     }
