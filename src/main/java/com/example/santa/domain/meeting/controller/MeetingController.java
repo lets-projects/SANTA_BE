@@ -2,15 +2,13 @@ package com.example.santa.domain.meeting.controller;
 
 import com.example.santa.domain.meeting.dto.MeetingDto;
 import com.example.santa.domain.meeting.dto.MeetingResponseDto;
+import com.example.santa.domain.meeting.dto.ParticipantDto;
 import com.example.santa.domain.meeting.service.MeetingService;
+import com.example.santa.domain.userchallenge.service.UserChallengeServiceImpl;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,13 +16,15 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5173/"})
-@RequestMapping("/meetings")
+@RequestMapping("/api/meetings")
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final UserChallengeServiceImpl userChallengeService;
 
-    public MeetingController(MeetingService meetingService) {
+    public MeetingController(MeetingService meetingService, UserChallengeServiceImpl userChallengeService) {
         this.meetingService = meetingService;
+        this.userChallengeService = userChallengeService;
     }
 
     @PostMapping
@@ -90,9 +90,9 @@ public class MeetingController {
                                               @RequestParam(name = "size", defaultValue = "5") int size) {
         if (tagName != null) {
             return ResponseEntity.ok(meetingService.getMeetingsByTagNameNoOffset(tagName, lastId, size));
-        } else {
-            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
+
     }
 
 
@@ -110,9 +110,9 @@ public class MeetingController {
                                                        @RequestParam(name = "size", defaultValue = "5") int size) {
         if (category != null) {
             return ResponseEntity.ok(meetingService.getMeetingsByCategoryNameNoOffset(category, lastId, size));
-        } else {
-            return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.badRequest().build();
+
     }
 
 //    @GetMapping("/participants")
@@ -144,5 +144,18 @@ public class MeetingController {
         return ResponseEntity.ok(meetingService.getMyMeetingsNoOffset(lastId, size, email));
     }
 
+    @PostMapping("/{meetingId}/end")
+    public ResponseEntity<?> endMeeting(@AuthenticationPrincipal String email,
+                                        @PathVariable(name = "meetingId") Long id) {
+
+        List<ParticipantDto> participants = meetingService.endMeeting(email, id);
+
+        for (ParticipantDto participant : participants){
+            userChallengeService.updateUserChallengeOnMeetingJoin(id, participant.getUserId());
+        }
+
+        return ResponseEntity.ok(participants);
+
+    }
 
 }

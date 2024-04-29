@@ -8,6 +8,8 @@ import com.example.santa.domain.user.dto.UserSignInRequestDto;
 import com.example.santa.domain.user.dto.UserSignupRequestDto;
 import com.example.santa.domain.user.dto.UserUpdateRequestDto;
 import com.example.santa.domain.user.entity.Password;
+import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
+import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
 import com.example.santa.global.security.jwt.JwtToken;
 import org.springframework.data.domain.Page;
@@ -40,6 +42,8 @@ public interface UserService {
 //    Page<UserMountainResponseDto> findAllUserMountains(Pageable pageable);
 
     Page<UserMountainResponseDto> findAllUserMountains(String email, Pageable pageable);
+
+    Page<UserChallengeCompletionResponseDto> findChallengesByCompletion(String email, boolean completion, Pageable pageable);
 
     // 선호카테고리 생성
     Long savePreferredCategory(String email, PreferredCategoryRequestDto preferredCategoryRequestDto);

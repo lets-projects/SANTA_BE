@@ -15,12 +15,17 @@ import com.example.santa.domain.user.entity.Password;
 import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
+import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
+import com.example.santa.domain.userchallenge.entity.UserChallenge;
+import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
+import com.example.santa.domain.usermountain.entity.UserMountain;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
 import com.example.santa.global.util.mapsturct.PreferredCategoryResponseDtoMapper;
+import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserResponseDtoMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +40,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -50,6 +58,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserMountainResponseDtoMapper userMountainResponseDtoMapper;
     private final PreferredCategoryResponseDtoMapper preferredCategoryResponseDtoMapper;
+    private final UserChallengeCompletionResponseMapper userChallengeCompletionResponseMapperResponseMapper;
+
+
+    private final UserChallengeRepository userChallengeRepository;
 
     @Transactional
     @Override
@@ -154,7 +166,23 @@ public class UserServiceImpl implements UserService {
         return pageDto;
     }
 
-    @Transactional
+
+    @Override
+    public Page<UserChallengeCompletionResponseDto> findChallengesByCompletion(String email, boolean completion, Pageable pageable) {
+        User byEmail = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        Page<UserChallengeCompletionResponseDto> completionDto;
+        if(completion) {
+            completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
+                    .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
+        } else {
+            completionDto = userRepository.findByUserIdAndIsCompletedFalse(byEmail.getId(), pageable)
+                    .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
+        }
+        return completionDto;
+    }
+
+
     @Override
     public String resetPassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
@@ -232,3 +260,13 @@ public class UserServiceImpl implements UserService {
         preferredCategoryRepository.deleteAll(allByUserId);
     }
 }
+
+
+//    @Override
+//    public Page<UserChallengeCompletionResponseDto> findCompletedChallenges(String email,Pageable pageable) {
+//        User byEmail = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+//        Page<UserChallengeCompletionResponseDto> completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(),pageable)
+//                .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
+//        return completionDto;
+//    }
