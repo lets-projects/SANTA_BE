@@ -20,10 +20,8 @@ import com.example.santa.global.security.jwt.JwtTokenProvider;
 import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserResponseDtoMapper;
-import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,10 +53,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long signup(UserSignupRequestDto request) {
         if (checkEmailDuplicate(request.getEmail())) {
-            throw new EntityExistsException("이메일 중복입니다.");
+            throw new ServiceLogicException(ExceptionCode.EMAIL_ALREADY_EXISTS);
         }
         if (checkNicknameDuplicate(request.getNickname())) {
-            throw new EntityExistsException("닉네임 중복입니다.");
+            throw new ServiceLogicException(ExceptionCode.NICKNAME_ALREADY_EXISTS);
         }
 
         User user = User.builder()
@@ -93,7 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public JwtToken signIn(UserSignInRequestDto userSignInRequestDto) {
         User user = userRepository.findByEmail(userSignInRequestDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + userSignInRequestDto.getEmail()));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(userSignInRequestDto.getEmail(), userSignInRequestDto.getPassword(), user.getAuthorities());
         authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -104,7 +102,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         UserResponseDto dto = userResponseDtoMapper.toDto(user);
         log.info("dto = {}", dto);
         return dto;
@@ -116,25 +114,24 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Transactional
     @Override
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
-        if (userRepository.existsByNickname(userUpdateRequestDto.getNickname())) {
-            throw new EntityExistsException("닉네임 중복입니다");
-        }
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email))
-                .update(userUpdateRequestDto.getName()
-                        , userUpdateRequestDto.getNickname()
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND))
+                .update(userUpdateRequestDto.getNickname()
                         , userUpdateRequestDto.getPhoneNumber()
                         , userUpdateRequestDto.getImage());
 
         return userResponseDtoMapper.toDto(user);
     }
 
+
+    @Transactional
     @Override
     public String changePassword(String email, String oldPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         user.getPasswordForChange().changePassword(oldPassword, newPassword);
         return user.getEmail();
     }
@@ -142,7 +139,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserMountainResponseDto> findAllUserMountains(String email, Pageable pageable) {
         User byEmail = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         Page<UserMountainResponseDto> pageDto = userRepository.findUserMountainsByUserId(byEmail.getId(), pageable)
                 .map(userMountainResponseDtoMapper::toDto);
         return pageDto;
@@ -166,10 +163,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String findPassword(String email, String newPassword) {
+    public String resetPassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. userEmail=" + email));
-        user.getPasswordForChange().findPassword(newPassword);
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        user.getPasswordForChange().resetPassword(newPassword);
         return user.getEmail();
     }
 
