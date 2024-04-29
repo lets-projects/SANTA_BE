@@ -3,6 +3,9 @@ package com.example.santa.domain.user.controller;
 import com.example.santa.domain.mail.dto.EmailCheckDto;
 import com.example.santa.domain.mail.dto.EmailRequestDto;
 import com.example.santa.domain.mail.service.EmailSendService;
+import com.example.santa.domain.preferredcategory.dto.CategoriesRequestDto;
+import com.example.santa.domain.preferredcategory.dto.PreferredCategoryRequestDto;
+import com.example.santa.domain.preferredcategory.dto.PreferredCategoryResponseDto;
 import com.example.santa.domain.user.dto.*;
 import com.example.santa.domain.user.service.UserService;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
@@ -13,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
@@ -96,6 +101,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(jwtToken);
     }
 
+    @PostMapping("/new-access-token")
+    @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+    public ResponseEntity<String> generateAccessToken(@RequestBody String refreshToken) {
+        String token = userService.generateAccessToken(refreshToken);
+        return ResponseEntity.status(HttpStatus.CREATED).body(token);
+    }
+
 //    @GetMapping("/check-token")
 //    public String checkToken(@AuthenticationPrincipal UserDetails userDetails) {
 //        return userDetails.getUsername();
@@ -135,8 +150,8 @@ public class UserController {
     @PatchMapping("/passwords")
     @Operation(summary = "비밀번호 수정", description = "비밀번호 수정")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
-            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = String.class)))})
     public ResponseEntity<String> changePassword(@AuthenticationPrincipal String email, @RequestBody @Valid PasswordChangeRequestDto passwordChangeRequestDto) {
         String changePassword = userService.changePassword(email
                 , passwordChangeRequestDto.getOldPassword(), passwordChangeRequestDto.getNewPassword());
@@ -147,8 +162,8 @@ public class UserController {
     @PostMapping("/reset-passwords")
     @Operation(summary = "비밀번호 찾기", description = "비밀번호 칮기")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
-            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+            @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = String.class)))})
     public ResponseEntity<String> resetPassword(@RequestBody @Valid PasswordResetRequestDto passwordResetRequestDto) {
         String resetPassword = userService.resetPassword(passwordResetRequestDto.getEmail(), passwordResetRequestDto.getNewPassword());
         return ResponseEntity.status(HttpStatus.OK).body(resetPassword);
@@ -167,4 +182,37 @@ public class UserController {
         return ResponseEntity.ok(allUserMountains);
     }
 
+//    @PostMapping("/preferred-categories/test")
+//    @Operation(summary = "선호카테고리 생성", description = "선호카테고리 생성")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = Long.class))),
+//            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = Long.class)))})
+//    public ResponseEntity<Long> savePreferredCategory(@AuthenticationPrincipal String email, @RequestBody @Valid PreferredCategoryRequestDto preferredCategoryRequestDto) {
+//        log.info("preferredCategoryRequestDto.getCategoryId() {}",preferredCategoryRequestDto.getCategoryId() );
+//        log.info("email {}", email);
+//        Long saved = userService.savePreferredCategory(email, preferredCategoryRequestDto);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+//    }
+
+    @Transactional
+    @PostMapping("/preferred-categories")
+    @Operation(summary = "선호카테고리 생성", description = "선호카테고리 생성")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = List.class)))})
+    public ResponseEntity<List<Long>> savePreferredCategory(@AuthenticationPrincipal String email, @RequestBody @Valid CategoriesRequestDto categoriesRequestDto) {
+        // 지우고 생성
+        userService.deleteAllPreferredCategory(email);
+        List<Long> longList = userService.savePreferredCategories(email, categoriesRequestDto.getCategoryIds());
+        return ResponseEntity.status(HttpStatus.CREATED).body(longList);
+    }
+    @GetMapping("/preferred-categories")
+    @Operation(summary = "선호카테고리 전체조회", description = "선호카테고리 전체조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = List.class)))})
+    public ResponseEntity<List<PreferredCategoryResponseDto>> findPreferredCategories(@AuthenticationPrincipal String email) {
+        List<PreferredCategoryResponseDto> allPreferredCategories = userService.findAllPreferredCategories(email);
+        return ResponseEntity.status(HttpStatus.OK).body(allPreferredCategories);
+    }
 }

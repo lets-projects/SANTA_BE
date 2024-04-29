@@ -27,4 +27,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT um FROM UserMountain um WHERE um.user.id = :userId")
     Page<UserMountain> findUserMountainsByUserId(@Param("userId") Long userId, Pageable pageable);
 
+
+
 }
