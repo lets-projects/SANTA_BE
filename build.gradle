@@ -71,11 +71,11 @@ dependencies {
     //s3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
-    compileJava {
-        options.compilerArgs += ['--parameters']
-        sourceCompatibility = '17' // 혹은 사용 중인 Java 버전
-        targetCompatibility = '17' // 혹은 사용 중인 Java 버전
-    }
+//    compileJava {
+//        options.compilerArgs += ['--parameters']
+//        sourceCompatibility = '17' // 혹은 사용 중인 Java 버전
+//        targetCompatibility = '17' // 혹은 사용 중인 Java 버전
+//    }
 
     //추가
 //    tasks.withType(JavaCompile) {
