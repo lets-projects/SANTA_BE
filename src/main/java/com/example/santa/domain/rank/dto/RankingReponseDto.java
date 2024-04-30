@@ -11,8 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RankingReponseDto {
-
-    private Long id;
     private Long rank;
     private String nickname;
     private String image;

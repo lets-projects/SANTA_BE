@@ -51,8 +51,8 @@ public class RankingServiceImpl implements RankingService{
         // 순위 표시 변수
         long rank = 1;
         for (Ranking ranking : rankings) {
-            // 현재 순위, 사용자 이름, 점수를 이용하여 새로운 객체 생성
-            rankingDtos.add(new RankingReponseDto(rank++, ranking.getId(),ranking.getUser().getNickname(), ranking.getUser().getImage(),ranking.getScore()));
+            // 여기에서 rank와 id의 순서를 맞게 조정
+            rankingDtos.add(new RankingReponseDto(rank++, ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore()));
         }
         return rankingDtos;
     }
