@@ -1,18 +1,17 @@
 package com.example.santa.domain.user.controller;
 
+import com.example.santa.domain.challege.dto.ChallengeResponseDto;
 import com.example.santa.domain.mail.dto.EmailCheckDto;
 import com.example.santa.domain.mail.dto.EmailRequestDto;
 import com.example.santa.domain.mail.service.EmailSendService;
 import com.example.santa.domain.preferredcategory.dto.CategoriesRequestDto;
-import com.example.santa.domain.preferredcategory.dto.PreferredCategoryRequestDto;
 import com.example.santa.domain.preferredcategory.dto.PreferredCategoryResponseDto;
+import com.example.santa.domain.rank.dto.RankingResponseDto;
 import com.example.santa.domain.user.dto.*;
 import com.example.santa.domain.user.service.UserService;
 import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
-import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
 import com.example.santa.global.security.jwt.JwtToken;
-import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -145,7 +144,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
-    public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal String email, @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal String email, @ModelAttribute @Valid UserUpdateRequestDto userUpdateRequestDto) {
         UserResponseDto updateUser = userService.updateUser(email, userUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
@@ -220,7 +219,7 @@ public class UserController {
     }
 
     @GetMapping("/completion")
-    @Operation(summary = "완료 OR 진행/시작 업적 전체 조회", description = "완료 OR 진행/시작 업적 전체 조회")
+    @Operation(summary = "완료(true)/진행 중 업적(false) 조회", description = "완료(true)/진행 중 업적(false) 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
@@ -230,6 +229,16 @@ public class UserController {
             , @RequestParam(name = "page", defaultValue = "0") Integer page) {
         Page<UserChallengeCompletionResponseDto> allUserCompletions = userService.findChallengesByCompletion(email, completion, PageRequest.of(page, size));
         return ResponseEntity.ok(allUserCompletions);
+    }
+
+    @Operation(summary = "개인 랭킹 조회 기능", description = "개인 랭킹 조회 기능")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
+    @GetMapping("/ranking")
+    public ResponseEntity<RankingResponseDto> getIndividualRanking(@AuthenticationPrincipal String email) {
+        RankingResponseDto rankingDto = userService.getIndividualRanking(email);
+        return ResponseEntity.ok(rankingDto);
     }
 
 

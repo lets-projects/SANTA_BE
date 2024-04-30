@@ -5,13 +5,11 @@ import com.example.santa.domain.category.repository.CategoryRepository;
 import com.example.santa.domain.challege.dto.ChallengeCreateDto;
 import com.example.santa.domain.challege.dto.ChallengeResponseDto;
 import com.example.santa.domain.challege.entity.Challenge;
-import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
-import com.example.santa.domain.userchallenge.dto.UserChallengeResponseDto;
-import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
+import com.example.santa.global.util.S3ImageService;
 import com.example.santa.global.util.mapsturct.ChallengeResponseMapper;
 import com.example.santa.domain.challege.repository.ChallengeRepository;
 import com.example.santa.global.util.mapsturct.UserChallengeResponseMapper;
@@ -21,11 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -41,15 +35,17 @@ public class ChallengeServiceImpl implements ChallengeService{
     private final UserChallengeRepository userChallengeRepository;
 
     private final CategoryRepository categoryRepository;
+    private final S3ImageService s3ImageService;
 
     @Autowired
-    public ChallengeServiceImpl(ChallengeRepository challengeRepository, UserChallengeRepository userChallengeRepository, UserRepository userRepository, CategoryRepository categoryRepository,ChallengeResponseMapper challengeResponseMapper, UserChallengeResponseMapper userChallengeResponseMapper) {
+    public ChallengeServiceImpl(ChallengeRepository challengeRepository, UserChallengeRepository userChallengeRepository, UserRepository userRepository, CategoryRepository categoryRepository, ChallengeResponseMapper challengeResponseMapper, UserChallengeResponseMapper userChallengeResponseMapper, S3ImageService s3ImageService) {
         this.challengeRepository = challengeRepository;
         this.userChallengeRepository = userChallengeRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.challengeResponseMapper = challengeResponseMapper;
         this.userChallengeResponseMapper = userChallengeResponseMapper;
+        this.s3ImageService = s3ImageService;
     }
 
 
@@ -60,12 +56,19 @@ public class ChallengeServiceImpl implements ChallengeService{
         Category category = categoryRepository.findById(challengeCreateDto.getCategoryId())
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
 
+        MultipartFile imageFile = challengeCreateDto.getImageFile();
+        String imageUrl = "defaultUrl";
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = s3ImageService.upload(imageFile);
+        }
+
+
         Challenge save = challengeRepository.save(Challenge.builder()
                 .category(category)
                 .name(challengeCreateDto.getName())
                 .description(challengeCreateDto.getDescription())
                 .clearStandard(challengeCreateDto.getClearStandard())
-                .image(challengeCreateDto.getImage())
+                .image(imageUrl)
                 .build());
         return challengeResponseMapper.toDto(save);
     }

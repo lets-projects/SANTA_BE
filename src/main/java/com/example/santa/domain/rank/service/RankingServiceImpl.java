@@ -1,17 +1,22 @@
 package com.example.santa.domain.rank.service;
 
-import com.example.santa.domain.rank.dto.RankingReponseDto;
+import com.example.santa.domain.rank.dto.RankingResponseDto;
 import com.example.santa.domain.rank.entity.Ranking;
 import com.example.santa.domain.rank.repository.RankingRepository;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RankingServiceImpl implements RankingService{
@@ -43,17 +48,30 @@ public class RankingServiceImpl implements RankingService{
         }
     }
 
-    @Override
-    public List<RankingReponseDto> getRankingOrderedByScore() {
-        List<Ranking> rankings = rankingRepository.findAllByOrderByScoreDesc();
-        // Ranking 정보를 담을 객체를 저장할 리스트 생성.
-        List<RankingReponseDto> rankingDtos = new ArrayList<>();
-        // 순위 표시 변수
-        long rank = 1;
-        for (Ranking ranking : rankings) {
-            // 현재 순위, 사용자 이름, 점수를 이용하여 새로운 객체 생성
-            rankingDtos.add(new RankingReponseDto(rank++, ranking.getId(),ranking.getUser().getNickname(), ranking.getUser().getImage(),ranking.getScore()));
-        }
-        return rankingDtos;
+    public Page<RankingResponseDto> getRankingOrderedByScore(Pageable pageable) {
+        Page<Ranking> rankingsPage = rankingRepository.findAllByOrderByScoreDesc(pageable);
+
+        return rankingsPage.map(ranking -> new RankingResponseDto(
+                ranking.getId(),
+                (long) (rankingRepository.countByScoreGreaterThan(ranking.getScore()) + 1),
+                ranking.getUser().getNickname(),
+                ranking.getUser().getImage(),
+                ranking.getScore()
+        ));
     }
+
+    @Override
+    public Optional<RankingResponseDto> getRankingByEmail(String email) {
+        Optional<Ranking> ranking = rankingRepository.findByUserEmail(email);
+        //Required type: Long
+        //Provided: int
+        return ranking.map(r -> new RankingResponseDto(
+                r.getId(),
+                (long) (rankingRepository.countByScoreGreaterThan(r.getScore()) + 1),
+                r.getUser().getNickname(),
+                r.getUser().getImage(),
+                r.getScore()
+        ));
+    }
+
 }

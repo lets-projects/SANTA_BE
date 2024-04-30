@@ -2,11 +2,13 @@ package com.example.santa.domain.user.service;
 
 import com.example.santa.domain.category.entity.Category;
 import com.example.santa.domain.category.repository.CategoryRepository;
-import com.example.santa.domain.preferredcategory.dto.CategoriesRequestDto;
 import com.example.santa.domain.preferredcategory.dto.PreferredCategoryRequestDto;
 import com.example.santa.domain.preferredcategory.dto.PreferredCategoryResponseDto;
 import com.example.santa.domain.preferredcategory.entity.PreferredCategory;
 import com.example.santa.domain.preferredcategory.repository.PreferredCategoryRepository;
+import com.example.santa.domain.rank.dto.RankingResponseDto;
+import com.example.santa.domain.rank.entity.Ranking;
+import com.example.santa.domain.rank.repository.RankingRepository;
 import com.example.santa.domain.user.dto.UserResponseDto;
 import com.example.santa.domain.user.dto.UserSignInRequestDto;
 import com.example.santa.domain.user.dto.UserSignupRequestDto;
@@ -16,14 +18,13 @@ import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
-import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
-import com.example.santa.domain.usermountain.entity.UserMountain;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
+import com.example.santa.global.util.S3ImageService;
 import com.example.santa.global.util.mapsturct.PreferredCategoryResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
@@ -36,13 +37,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional
@@ -55,6 +52,8 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PreferredCategoryRepository preferredCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final RankingRepository rankingRepository;
+    private final S3ImageService s3ImageService;
 
     private final UserMountainResponseDtoMapper userMountainResponseDtoMapper;
     private final PreferredCategoryResponseDtoMapper preferredCategoryResponseDtoMapper;
@@ -138,11 +137,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
+        MultipartFile imageFile = userUpdateRequestDto.getImageFile();
+        String imageUrl = "defaultUrl";
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = s3ImageService.upload(imageFile);
+        }
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND))
                 .update(userUpdateRequestDto.getNickname()
                         , userUpdateRequestDto.getPhoneNumber()
-                        , userUpdateRequestDto.getImage());
+                        , imageUrl);
 
         return userResponseDtoMapper.toDto(user);
     }
@@ -176,10 +181,26 @@ public class UserServiceImpl implements UserService {
             completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
                     .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
         } else {
-            completionDto = userRepository.findByUserIdAndIsCompletedFalse(byEmail.getId(), pageable)
+            completionDto = userRepository.findByUserIdAndIsCompletedNull(byEmail.getId(), pageable)
                     .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
         }
         return completionDto;
+    }
+
+    @Override
+    public RankingResponseDto getIndividualRanking(String email) {
+        // 전체 랭킹 목록을 점수 내림차순으로 가져옵니다.
+        List<Ranking> rankings = rankingRepository.findAllByOrderByScoreDesc();
+        long rank = 1;
+        for (Ranking ranking : rankings) {
+            if (ranking.getUser().getEmail().equals(email)) {
+                // 해당 사용자의 랭킹 정보를 반환합니다.
+                return new RankingResponseDto(rank,ranking.getId(),ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore());
+            }
+            rank++;
+        }
+        // 사용자의 랭킹 정보가 없을 경우 예외 처리나 null 반환 등의 로직이 필요
+        throw new RuntimeException("User ranking not found");
     }
 
 
