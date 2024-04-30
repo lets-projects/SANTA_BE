@@ -73,7 +73,7 @@ public class MeetingService {
 
         MultipartFile imageFile = meetingDto.getImageFile();
         String imageUrl = "defaultUrl";
-        if (!imageFile.isEmpty()) {
+        if (imageFile != null && !imageFile.isEmpty()) {
             imageUrl = s3ImageService.upload(imageFile);
         }
 
