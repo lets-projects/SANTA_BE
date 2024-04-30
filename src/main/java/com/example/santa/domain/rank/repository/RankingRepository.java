@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
 
+
     Optional<Ranking> findByUserEmail(String userEmail);
 
     Page<Ranking> findAllByOrderByScoreDesc(Pageable pageable);

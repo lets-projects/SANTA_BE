@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface RankingService {
 
+    void updateAllRanks();
     Page<RankingResponseDto> getRankingOrderedByScore(Pageable pageable);
     Optional<RankingResponseDto> getRankingByEmail(String email);
 
