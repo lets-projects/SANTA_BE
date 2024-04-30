@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RankingReponseDto {
+public class RankingResponseDto {
     private Long rank;
     private String nickname;
     private String image;
