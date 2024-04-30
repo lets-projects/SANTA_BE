@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -29,4 +30,6 @@ public class ChallengeCreateDto {
     private Integer clearStandard;
 
     private String image;
+
+    private MultipartFile imageFile;
 }

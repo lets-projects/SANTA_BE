@@ -9,9 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Setter
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = "user_id")
-})
 @Entity
 public class Ranking {
 
@@ -23,7 +20,7 @@ public class Ranking {
 
     private Integer score;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

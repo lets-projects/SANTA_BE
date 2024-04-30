@@ -24,6 +24,7 @@ import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
+import com.example.santa.global.util.S3ImageService;
 import com.example.santa.global.util.mapsturct.PreferredCategoryResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
@@ -36,6 +37,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final PreferredCategoryRepository preferredCategoryRepository;
     private final CategoryRepository categoryRepository;
     private final RankingRepository rankingRepository;
+    private final S3ImageService s3ImageService;
 
     private final UserMountainResponseDtoMapper userMountainResponseDtoMapper;
     private final PreferredCategoryResponseDtoMapper preferredCategoryResponseDtoMapper;
@@ -134,11 +137,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
+        MultipartFile imageFile = userUpdateRequestDto.getImageFile();
+        String imageUrl = "defaultUrl";
+        if (imageFile != null && !imageFile.isEmpty()) {
+            imageUrl = s3ImageService.upload(imageFile);
+        }
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND))
                 .update(userUpdateRequestDto.getNickname()
                         , userUpdateRequestDto.getPhoneNumber()
-                        , userUpdateRequestDto.getImage());
+                        , imageUrl);
 
         return userResponseDtoMapper.toDto(user);
     }

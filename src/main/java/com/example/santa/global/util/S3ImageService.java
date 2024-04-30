@@ -81,10 +81,11 @@ public class S3ImageService {
 
         try{
             PutObjectRequest putObjectRequest =
-                    new PutObjectRequest(bucketName, s3FileName, byteArrayInputStream, metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead);
+                    new PutObjectRequest(bucketName, s3FileName, byteArrayInputStream, metadata);
+                            //.withCannedAcl(CannedAccessControlList.PublicRead);
             amazonS3.putObject(putObjectRequest); // put image to S3
         }catch (Exception e){
+            log.error("S3 이미지 업로드 중 에러 발생", e);
             throw new ServiceLogicException(ExceptionCode.PUT_OBJECT_EXCEPTION);
         }finally {
             byteArrayInputStream.close();

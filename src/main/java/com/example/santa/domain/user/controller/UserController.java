@@ -144,7 +144,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = UserResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserResponseDto.class)))})
-    public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal String email, @RequestBody @Valid UserUpdateRequestDto userUpdateRequestDto) {
+    public ResponseEntity<UserResponseDto> updateUser(@AuthenticationPrincipal String email, @ModelAttribute @Valid UserUpdateRequestDto userUpdateRequestDto) {
         UserResponseDto updateUser = userService.updateUser(email, userUpdateRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(updateUser);
     }
