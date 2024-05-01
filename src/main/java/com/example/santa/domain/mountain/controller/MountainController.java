@@ -37,8 +37,9 @@ public class MountainController {
 
     @Operation(summary = "등산 인증 기능(유저 마운틴 등록)", description = "등산 인증 기능(유저 마운틴 등록)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class))),
-            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = UserMountainResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserMountainResponseDto.class)))})
     @PostMapping("/test")
     public ResponseEntity<UserMountainResponseDto> createUserMountain1(@AuthenticationPrincipal String email, @RequestParam double latitude, double longitude, LocalDate climbDate) {
 
@@ -51,8 +52,8 @@ public class MountainController {
 
     @Operation(summary = "등산 인증 기능(유저 마운틴 등록)", description = "등산 인증 기능(유저 마운틴 등록)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class))),
-            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
+            @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =UserMountainResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = UserMountainResponseDto.class)))})
     @PostMapping("/test2")
     public ResponseEntity<UserMountainResponseDto> createUserMountain1(@AuthenticationPrincipal String email, @io.swagger.v3.oas.annotations.parameters.RequestBody UserMountainVerifyRequestDto request) {
 
