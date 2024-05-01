@@ -14,8 +14,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserMountainVerifyRequestDto {
 
-//    private String userEmail;
-//    private Long categoryId;
     private LocalDate climbDate;
     private double latitude;
     private double longitude;
