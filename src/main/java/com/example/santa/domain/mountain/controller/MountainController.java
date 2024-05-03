@@ -86,7 +86,6 @@ public class MountainController {
         System.out.println(email);
         UserMountainResponseDto userMountains = userMountainService.verifyAndCreateUserMountain1(request, email);
 
-
         return ResponseEntity.ok(userMountains);
     }
 }
