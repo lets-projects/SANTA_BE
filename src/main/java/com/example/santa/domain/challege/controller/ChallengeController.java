@@ -60,7 +60,7 @@ public class ChallengeController {
 
 
     // 챌린지 등록
-    @Operation(summary = "챌린지 등록기능", description = "챌린지 등록")
+    @Operation(summary = "*관리자* 챌린지 등록기능", description = "챌린지 등록")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
@@ -71,7 +71,7 @@ public class ChallengeController {
         return ResponseEntity.ok(savedChallenge);
     }
 
-    @Operation(summary = "등록 챌린지 수정 기능", description = "등록된 챌린지 정보 수정")
+    @Operation(summary = "*관리자* 등록 챌린지 수정 기능", description = "등록된 챌린지 정보 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = ChallengeResponseDto.class)))})
@@ -82,7 +82,7 @@ public class ChallengeController {
         return ResponseEntity.ok(updatedChallenge);
     }
 
-    @Operation(summary = "등록 챌린지 삭제 기능", description = "등록된 챌린지를 챌린지 고유 id로 삭제")
+    @Operation(summary = "*관리자* 등록 챌린지 삭제 기능", description = "등록된 챌린지를 챌린지 고유 id로 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = void.class)))})
