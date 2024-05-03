@@ -31,4 +31,10 @@ public class ReportController {
         PageRequest pageRequest = PageRequest.of(page, size);
         return ResponseEntity.ok(reportService.getReports(pageRequest));
     }
+
+    @DeleteMapping("{reportId}")
+    public ResponseEntity<?> deleteReport(@RequestParam(name = "reportId") Long id) {
+        reportService.deleteReport(id);
+        return ResponseEntity.ok().build();
+    }
 }
