@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService {
                 .phoneNumber(request.getPhoneNumber())
                 .image(Constants.DEFAULT_URL + "user_default_image.png")
                 .role(Role.USER)
+                .socialType(request.getSocialType())
+                .socialId(request.getSocialId())
                 .build();
 
         User save = userRepository.save(user);

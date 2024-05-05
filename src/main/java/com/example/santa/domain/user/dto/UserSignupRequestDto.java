@@ -1,5 +1,6 @@
 package com.example.santa.domain.user.dto;
 
+import com.example.santa.domain.user.entity.SocialType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -16,4 +17,6 @@ public class UserSignupRequestDto {
     private String nickname;
     @NotBlank
     private String phoneNumber;
+    private SocialType socialType;
+    private String socialId;
 }
