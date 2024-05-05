@@ -17,7 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/report")
+@RequestMapping("/api/reports")
 public class ReportController {
 
     private final ReportService reportService;
@@ -26,7 +26,7 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @Operation(summary = "신고 기능", description = "신고 기능")
+    @Operation(summary = "신고 기능", description = "모임 상세페이지에서 사용자 프로필을 눌러 대상 유저를 신고하는 기능")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = ReportResponseDto.class)))
     })
