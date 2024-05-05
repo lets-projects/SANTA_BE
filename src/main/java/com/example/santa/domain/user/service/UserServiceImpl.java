@@ -17,6 +17,7 @@ import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
 import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
 import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
+import com.example.santa.global.constant.Constants;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 .name(request.getName())
                 .nickname(request.getNickname())
                 .phoneNumber(request.getPhoneNumber())
-                .image("https://s3.ap-northeast-2.amazonaws.com/elice.santa/user_default_img.png")
+                .image(Constants.DEFAULT_URL + "user_default_image.png")
                 .role(Role.USER)
                 .build();
 
@@ -151,11 +152,10 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
         MultipartFile imageFile = userUpdateRequestDto.getImageFile();
         String imageUrl = userUpdateRequestDto.getImage();
+        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "user_default_image.png")){
+            s3ImageService.deleteImageFromS3(imageUrl);
+        }
         if (imageFile != null && !imageFile.isEmpty()) {
-            if(!Objects.equals(imageUrl, "https://s3.ap-northeast-2.amazonaws.com/elice.santa/user_default_img.png")){
-                s3ImageService.deleteImageFromS3(imageUrl);
-            }
-
             imageUrl = s3ImageService.upload(imageFile);
         }
 

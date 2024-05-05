@@ -16,6 +16,7 @@ import com.example.santa.domain.meeting.repository.TagRepository;
 import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
+import com.example.santa.global.constant.Constants;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.util.S3ImageService;
@@ -73,7 +74,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         MultipartFile imageFile = meetingDto.getImageFile();
-        String imageUrl = "https://s3.ap-northeast-2.amazonaws.com/elice.santa/meeting_default_img.png";
+        String imageUrl = Constants.DEFAULT_URL + "meeting_default_image.png";
         if (imageFile != null && !imageFile.isEmpty()) {
             imageUrl = s3ImageService.upload(imageFile);
         }
@@ -202,11 +203,10 @@ public class MeetingServiceImpl implements MeetingService {
 
         MultipartFile imageFile = meetingDto.getImageFile();
         String imageUrl = meetingDto.getImage();
+        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "meeting_default_image.png")){
+            s3ImageService.deleteImageFromS3(imageUrl);
+        }
         if (imageFile != null && !imageFile.isEmpty()) {
-            if(!Objects.equals(imageUrl, "https://s3.ap-northeast-2.amazonaws.com/elice.santa/meeting_default_img.png")){
-                s3ImageService.deleteImageFromS3(imageUrl);
-            }
-
             imageUrl = s3ImageService.upload(imageFile);
         }
 

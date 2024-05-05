@@ -7,6 +7,7 @@ import com.example.santa.domain.challege.dto.ChallengeResponseDto;
 import com.example.santa.domain.challege.entity.Challenge;
 import com.example.santa.domain.user.repository.UserRepository;
 import com.example.santa.domain.userchallenge.repository.UserChallengeRepository;
+import com.example.santa.global.constant.Constants;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.util.S3ImageService;
@@ -50,7 +51,7 @@ public class ChallengeServiceImpl implements ChallengeService{
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
 
         MultipartFile imageFile = challengeCreateDto.getImageFile();
-        String imageUrl = "https://s3.ap-northeast-2.amazonaws.com/elice.santa/challenge_default_image.png";
+        String imageUrl = Constants.DEFAULT_URL + "challenge_default_image.png";
         if (imageFile != null && !imageFile.isEmpty()) {
             imageUrl = s3ImageService.upload(imageFile);
         }
@@ -86,11 +87,10 @@ public class ChallengeServiceImpl implements ChallengeService{
     public ChallengeResponseDto updateChallenge(Long id, ChallengeCreateDto challengeCreateDto) {
         MultipartFile imageFile = challengeCreateDto.getImageFile();
         String imageUrl = challengeCreateDto.getImage();
+        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "challenge_default_image.png")){
+            s3ImageService.deleteImageFromS3(imageUrl);
+        }
         if (imageFile != null && !imageFile.isEmpty()) {
-            if(!Objects.equals(imageUrl, "https://s3.ap-northeast-2.amazonaws.com/elice.santa/challenge_default_image.png")){
-                s3ImageService.deleteImageFromS3(imageUrl);
-            }
-
             imageUrl = s3ImageService.upload(imageFile);
         }
         ChallengeResponseDto result = null;
@@ -98,7 +98,7 @@ public class ChallengeServiceImpl implements ChallengeService{
             Challenge challenge = challengeRepository.findById(id).get();
             challenge.setName(challengeCreateDto.getName());
             challenge.setDescription(challengeCreateDto.getDescription());
-            challenge.setImage(challengeCreateDto.getImage());
+            challenge.setImage(imageUrl);
             challenge.setClearStandard(challengeCreateDto.getClearStandard());
             challenge = challengeRepository.save(challenge);
             result = challengeResponseMapper.toDto(challenge);
