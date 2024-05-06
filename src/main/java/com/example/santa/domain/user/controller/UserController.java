@@ -122,8 +122,17 @@ public class UserController {
     }
 
     @DeleteMapping
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal String email) {
         userService.deleteUser(email);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("{userId}")
+    @Operation(summary = "회원 삭제(관리자)", description = "회원 삭제(관리자)")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteUser(@RequestParam(name = "userId") Long id) {
+        userService.deleteUserFromAdmin(id);
         return ResponseEntity.ok().build();
     }
 

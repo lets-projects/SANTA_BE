@@ -55,4 +55,6 @@ public interface UserService {
 
     // 선호카테고리 전체삭제
     void deleteAllPreferredCategory(String email);
+
+    void deleteUserFromAdmin(Long id);
 }

@@ -72,8 +72,8 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reporters;
 
-//    @OneToMany(mappedBy = "reportedParticipant", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Report> reports;
+    @OneToMany(mappedBy = "reportedParticipant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
 
     @Builder
     public User(String email, Password password, String name, String nickname, String phoneNumber, String image, Role role, SocialType socialType, String socialId, double accumulatedHeight) {
