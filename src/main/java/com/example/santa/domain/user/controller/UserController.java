@@ -136,7 +136,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class))),
             @ApiResponse(responseCode = "500", description = "에러", content = @Content(schema = @Schema(implementation = void.class)))})
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> deleteUser(@RequestParam(name = "userId") Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long id) {
         userService.deleteUserFromAdmin(id);
         return ResponseEntity.ok().build();
     }

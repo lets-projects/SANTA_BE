@@ -53,7 +53,7 @@ public class ReportController {
     })
     @DeleteMapping("/{reportId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> deleteReport(@RequestParam(name = "reportId") Long id) {
+    public ResponseEntity<?> deleteReport(@PathVariable(name = "reportId") Long id) {
         reportService.deleteReport(id);
         return ResponseEntity.ok().build();
     }
