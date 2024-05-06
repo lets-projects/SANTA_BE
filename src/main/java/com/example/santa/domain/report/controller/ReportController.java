@@ -51,7 +51,7 @@ public class ReportController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = ReportResponseDto.class)))
     })
-    @DeleteMapping("{reportId}")
+    @DeleteMapping("/{reportId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteReport(@RequestParam(name = "reportId") Long id) {
         reportService.deleteReport(id);

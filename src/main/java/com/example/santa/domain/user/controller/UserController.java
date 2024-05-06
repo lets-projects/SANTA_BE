@@ -130,7 +130,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}")
     @Operation(summary = "회원 삭제(관리자)", description = "회원 삭제(관리자)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = void.class))),
