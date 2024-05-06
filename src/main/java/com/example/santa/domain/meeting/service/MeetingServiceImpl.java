@@ -250,7 +250,10 @@ public class MeetingServiceImpl implements MeetingService {
             throw new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND);
         }
 
-        if (!Objects.equals(user.getId(), meeting.getLeader().getId()) || user.getRole() != Role.ADMIN){
+        if (!Objects.equals(user.getId(), meeting.getLeader().getId())){
+            throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER);
+        }
+        if(user.getRole() != Role.ADMIN){
             throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER);
         }
         meetingRepository.deleteById(id);
