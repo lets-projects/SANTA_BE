@@ -121,6 +121,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userByEmail);
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal String email) {
+        userService.deleteUser(email);
+        return ResponseEntity.ok().build();
+    }
+
 //    @GetMapping("")
 //    @Operation(summary = "관리자 회원 조회", description = "관리자 회원조회")
 //    @PreAuthorize("hasAuthority('ADMIN')")

@@ -25,6 +25,7 @@ public interface UserService {
     String generateAccessToken(String refreshToken);
     // read
     UserResponseDto findUserByEmail(String email);
+    void deleteUser(String email);
 
     // Users read(관리자)
     Page<UserResponseDto> findAllUser(String keyWord, Pageable pageable);
