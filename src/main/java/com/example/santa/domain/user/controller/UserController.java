@@ -102,8 +102,8 @@ public class UserController {
     @Operation(summary = "AccessToken 재발급", description = "AccessToken 재발급")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "성공", content = @Content(schema = @Schema(implementation = Long.class)))})
-    public ResponseEntity<String> generateAccessToken(@RequestBody String refreshToken) {
-        String token = userService.generateAccessToken(refreshToken);
+    public ResponseEntity<String> generateAccessToken(@RequestBody RefreshTokenDto refreshToken) {
+        String token = userService.generateAccessToken(refreshToken.getRefreshToken());
         return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }
 
