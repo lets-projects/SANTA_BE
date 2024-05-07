@@ -11,7 +11,6 @@ import com.example.santa.global.constant.Constants;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.util.S3ImageService;
-import com.example.santa.global.util.mapsturct.ChallengeParticipationResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.ChallengeResponseMapper;
 import com.example.santa.domain.challege.repository.ChallengeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -36,17 +35,15 @@ public class ChallengeServiceImpl implements ChallengeService{
     private final CategoryRepository categoryRepository;
 
     private final UserChallengeRepository userChallengeRepository;
-    private final ChallengeParticipationResponseDtoMapper challengeParticipationResponseDtoMapper;
 
     private final S3ImageService s3ImageService;
 
     @Autowired
-    public ChallengeServiceImpl(ChallengeRepository challengeRepository, CategoryRepository categoryRepository, UserChallengeRepository userChallengeRepository, ChallengeResponseMapper challengeResponseMapper, ChallengeParticipationResponseDtoMapper challengeParticipationResponseDtoMapper, S3ImageService s3ImageService) {
+    public ChallengeServiceImpl(ChallengeRepository challengeRepository, CategoryRepository categoryRepository, UserChallengeRepository userChallengeRepository, ChallengeResponseMapper challengeResponseMapper,  S3ImageService s3ImageService) {
         this.challengeRepository = challengeRepository;
         this.categoryRepository = categoryRepository;
         this.userChallengeRepository =userChallengeRepository;
         this.challengeResponseMapper = challengeResponseMapper;
-        this.challengeParticipationResponseDtoMapper = challengeParticipationResponseDtoMapper;
         this.s3ImageService = s3ImageService;
     }
 
