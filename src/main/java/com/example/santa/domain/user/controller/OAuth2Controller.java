@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/oauth2")
+@RestController("/api/oauth2")
 @RequiredArgsConstructor
 @Slf4j
 public class OAuth2Controller {

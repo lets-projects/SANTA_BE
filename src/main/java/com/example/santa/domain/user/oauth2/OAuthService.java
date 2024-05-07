@@ -9,10 +9,12 @@ import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
 public class OAuthService {
     private final UserRepository userRepository;
