@@ -41,6 +41,7 @@ public class KakaoClient implements OauthClient {
         body.add("grant_type", GRANT_TYPE);
         body.add("client_id", clientId);
         body.add("redirect_uri", redirectUri);
+        body.add("code", oauthParams.getAuthorizationCode());
 
         // 헤더 + 바디
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity(body, headers);
