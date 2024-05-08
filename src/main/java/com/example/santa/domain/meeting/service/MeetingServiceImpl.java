@@ -346,9 +346,16 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = meetingRepository.findById(id)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.MEETING_NOT_FOUND));
 
-//        meeting.setEnd(true);
-//
-//        meetingRepository.save(meeting);
+        if (!Objects.equals(user.getId(), meeting.getLeader().getId())){
+            throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER);
+        }
+
+        if(meeting.isEnd()){
+            throw new ServiceLogicException(ExceptionCode.MEETING_ALREADY_END);
+        }
+        meeting.setEnd(true);
+
+        meetingRepository.save(meeting);
 
         return participantsDtoMapper.toDtoList(meeting.getParticipant());
 
