@@ -4,11 +4,13 @@ import com.example.santa.domain.category.entity.Category;
 import com.example.santa.domain.common.BaseEntity;
 import com.example.santa.domain.meeting.entity.MeetingTag;
 import com.example.santa.domain.user.entity.User;
+import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -39,6 +41,7 @@ public class Challenge extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserChallenge> userChallenges;
 
 }
