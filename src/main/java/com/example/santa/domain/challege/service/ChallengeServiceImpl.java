@@ -101,10 +101,11 @@ public class ChallengeServiceImpl implements ChallengeService{
     public ChallengeResponseDto updateChallenge(Long id, ChallengeCreateDto challengeCreateDto) {
         MultipartFile imageFile = challengeCreateDto.getImageFile();
         String imageUrl = challengeCreateDto.getImage();
-        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "challenge_default_image.png")){
-            s3ImageService.deleteImageFromS3(imageUrl);
-        }
+
         if (imageFile != null && !imageFile.isEmpty()) {
+            if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "challenge_default_image.png")){
+                s3ImageService.deleteImageFromS3(imageUrl);
+            }
             imageUrl = s3ImageService.upload(imageFile);
         }
         ChallengeResponseDto result = null;

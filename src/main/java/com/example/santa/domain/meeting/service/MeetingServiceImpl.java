@@ -203,10 +203,11 @@ public class MeetingServiceImpl implements MeetingService {
 
         MultipartFile imageFile = meetingDto.getImageFile();
         String imageUrl = meetingDto.getImage();
-        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "meeting_default_image.png")){
-            s3ImageService.deleteImageFromS3(imageUrl);
-        }
+
         if (imageFile != null && !imageFile.isEmpty()) {
+            if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "meeting_default_image.png")){
+                s3ImageService.deleteImageFromS3(imageUrl);
+            }
             imageUrl = s3ImageService.upload(imageFile);
         }
 
