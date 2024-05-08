@@ -157,10 +157,11 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
         MultipartFile imageFile = userUpdateRequestDto.getImageFile();
         String imageUrl = userUpdateRequestDto.getImage();
-        if (!Objects.equals(imageUrl, Constants.DEFAULT_URL + "user_default_image.png")) {
-            s3ImageService.deleteImageFromS3(imageUrl);
-        }
+
         if (imageFile != null && !imageFile.isEmpty()) {
+            if (!Objects.equals(imageUrl, Constants.DEFAULT_URL + "user_default_image.png")) {
+                s3ImageService.deleteImageFromS3(imageUrl);
+            }
             imageUrl = s3ImageService.upload(imageFile);
         }
 
