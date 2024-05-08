@@ -17,6 +17,7 @@ public enum ExceptionCode {
     ALREADY_PARTICIPATING(HttpStatus.CONFLICT, "이미 참여중인 모임입니다" ),
     ALREADY_PARTICIPATING_ON_DATE(HttpStatus.CONFLICT, "참여중인 날짜입니다." ),
     USER_NOT_LEADER(HttpStatus.NOT_FOUND, "모임장과 관리자만 삭제할 수 있습니다."),
+    USER_NOT_LEADER2(HttpStatus.NOT_FOUND, "모임장만 수정할 수 있습니다."),
     MOUNTAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 산 입니다."),
     USERMOUNTAIN_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저 등산 정보입니다."),
     ALREADY_USERMOUNTAIN_ON_DATE(HttpStatus.CONFLICT, "이미 같은 날에 이 산에 대한 인증이 존재합니다."),

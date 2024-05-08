@@ -85,7 +85,7 @@ public class MeetingController {
 //        return ResponseEntity.ok(meetingService.getAllMeetingsNoOffset(lastId, size));
 //    }
 
-    @Operation(summary = "모임 수정 기능(모임장,관리자)", description = "모임 수정")
+    @Operation(summary = "모임 수정 기능(모임장)", description = "모임 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation = MeetingResponseDto.class)))
     })
