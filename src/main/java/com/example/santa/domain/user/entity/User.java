@@ -89,10 +89,12 @@ public class User extends BaseEntity implements UserDetails {
         this.accumulatedHeight = accumulatedHeight;
     }
 
-    public User update(String nickname, String phoneNumber, String image) {
+    public User update(String nickname, String phoneNumber, String name, String image, Role role) {
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
+        this.name = name;
         this.image = image;
+        this.role = role;
         return this;
     }
 

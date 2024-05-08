@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(String email, UserUpdateRequestDto userUpdateRequestDto) {
         MultipartFile imageFile = userUpdateRequestDto.getImageFile();
         String imageUrl = userUpdateRequestDto.getImage();
-        if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "user_default_image.png")){
+        if (!Objects.equals(imageUrl, Constants.DEFAULT_URL + "user_default_image.png")) {
             s3ImageService.deleteImageFromS3(imageUrl);
         }
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -168,14 +168,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND))
                 .update(userUpdateRequestDto.getNickname()
                         , userUpdateRequestDto.getPhoneNumber()
-                        , imageUrl);
+                        , userUpdateRequestDto.getName()
+                        , imageUrl
+                        , Role.USER);
 
         return userResponseDtoMapper.toDto(user);
     }
 
     @Transactional
     @Override
-    public void deleteUser(String email){
+    public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         // 해당 사용자가 신고된 이력이 있는지 확인
@@ -189,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUserFromAdmin(Long id){
+    public void deleteUserFromAdmin(Long id) {
         userRepository.deleteById(id);
     }
 
@@ -217,7 +219,7 @@ public class UserServiceImpl implements UserService {
         User byEmail = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
         Page<UserChallengeCompletionResponseDto> completionDto;
-        if(completion) {
+        if (completion) {
             completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
                     .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
         } else {
@@ -235,7 +237,7 @@ public class UserServiceImpl implements UserService {
         for (Ranking ranking : rankings) {
             if (ranking.getUser().getEmail().equals(email)) {
                 // 해당 사용자의 랭킹 정보를 반환합니다.
-                return new RankingResponseDto(rank,ranking.getId(),ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore());
+                return new RankingResponseDto(rank, ranking.getId(), ranking.getUser().getNickname(), ranking.getUser().getImage(), ranking.getScore());
             }
             rank++;
         }

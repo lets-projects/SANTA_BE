@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 public class UserUpdateRequestDto {
     private String nickname;
+    private String name;
     private String phoneNumber;
     private String image;
     private MultipartFile imageFile;
