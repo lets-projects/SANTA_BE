@@ -104,6 +104,7 @@ public class JwtTokenProvider {
         String newAccessToken = Jwts.builder()
                 .setSubject(username)
                 .claim("auth", authorities)
+                .claim("type", "access")
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -142,6 +143,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             String type = claimsJws.getBody().get("type").toString();
             return type.equals("access");
+
         } catch (SecurityException | MalformedJwtException e) {
             log.info("invalid JWT Token", e);
 //            throw new ServiceLogicException(ExceptionCode.INVALID_JWT_TOKEN);
