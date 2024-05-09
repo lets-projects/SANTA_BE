@@ -80,7 +80,7 @@ public class ChallengeController {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class)))})
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable(name = "id") Long id, @RequestBody @Valid ChallengeCreateDto challengeCreateDto) {
+    public ResponseEntity<ChallengeResponseDto> updateChallenge(@PathVariable(name = "id") Long id, @ModelAttribute @Valid ChallengeCreateDto challengeCreateDto) {
         ChallengeResponseDto updatedChallenge = challengeService.updateChallenge(id, challengeCreateDto);
         return ResponseEntity.ok(updatedChallenge);
     }

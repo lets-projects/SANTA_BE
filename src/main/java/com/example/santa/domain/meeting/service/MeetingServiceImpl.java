@@ -198,14 +198,17 @@ public class MeetingServiceImpl implements MeetingService {
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
 
         if (!Objects.equals(user.getId(), meeting.getLeader().getId())){
-            throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER);
+            throw new ServiceLogicException(ExceptionCode.USER_NOT_LEADER2);
         }
 
         MultipartFile imageFile = meetingDto.getImageFile();
         String imageUrl = meetingDto.getImage();
+        System.out.println(imageUrl);
 
         if (imageFile != null && !imageFile.isEmpty()) {
             if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "meeting_default_image.png")){
+                System.out.println(imageUrl);
+                System.out.println("이미지 다름");
                 s3ImageService.deleteImageFromS3(imageUrl);
             }
             imageUrl = s3ImageService.upload(imageFile);
@@ -221,7 +224,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         meetingRepository.save(meeting);
 
-        Set<MeetingTag> meetingTags = new HashSet<>();
+        meeting.getMeetingTags().clear();
         meetingTagRepository.deleteByMeeting(meeting);
         for (String tagName : meetingDto.getTags()) {
             Tag tag = tagRepository.findByName(tagName)
@@ -232,10 +235,10 @@ public class MeetingServiceImpl implements MeetingService {
                     .tag(tag)
                     .meeting(meeting)
                     .build();
-            meetingTags.add(meetingTagRepository.save(meetingTag));
+            meeting.getMeetingTags().add(meetingTag);
         }
 
-        meeting.setMeetingTags(meetingTags);
+        meetingTagRepository.saveAll(meeting.getMeetingTags());
 
         return convertToDto(meetingRepository.save(meeting));
     }

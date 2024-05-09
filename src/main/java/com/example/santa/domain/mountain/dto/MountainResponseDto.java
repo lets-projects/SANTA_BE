@@ -14,7 +14,9 @@ public class MountainResponseDto {
     private String name;
     private String location;
     private double height;
-    private double latitude;
+    private String description;
+    private String point;
+    private String transportation;
     private double longitude;
-
+    private double latitude;
 }
