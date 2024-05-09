@@ -51,6 +51,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/users/duplicate/nickname").permitAll()
                                 .requestMatchers("/api/users/send-email").permitAll()
                                 .requestMatchers("/api/users/verify-email").permitAll()
+                                .requestMatchers("/api/users/reset-passwords").permitAll()
                                 .requestMatchers("/api/categories").permitAll()
                                 .requestMatchers("/api/meetings").permitAll()
                                 .requestMatchers("/api/meetings/{meetingId}").permitAll()

@@ -96,9 +96,10 @@ public class MeetingServiceImpl implements MeetingService {
         Set<MeetingTag> meetingTags = new HashSet<>();
         // dto에 있는 해시태그에서 생성되지 않은 해시태그면 생성해주고 생성되어 있으면 가져옴
         for (String tagName : meetingDto.getTags()) {
+            String saveTagName = tagName.replace(" ", "");
             Tag tag = tagRepository.findByName(tagName)
                     .orElseGet(() -> tagRepository.save(Tag.builder()
-                            .name(tagName)
+                            .name(saveTagName)
                             .build()));
             MeetingTag meetingTag = MeetingTag.builder()
                     .tag(tag)
@@ -265,7 +266,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Page<MeetingResponseDto> getMeetingsByTagName(String tagName, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByTagName(tagName,pageable);
+        Page<Meeting> meetings = meetingRepository.findByMeetingTags_Tag_Name(tagName,pageable);
         return meetings.map(this::convertToDto);
     }
 
@@ -273,7 +274,7 @@ public class MeetingServiceImpl implements MeetingService {
     public Page<MeetingResponseDto> getMeetingsByTagNameNoOffset(String tagName, Long lastId, int size) {
         Page<Meeting> meetings;
         if (lastId == null) {
-            meetings = meetingRepository.findByTagName(tagName, PageRequest.of(0, size, Sort.by("id").descending()));
+            meetings = meetingRepository.findByMeetingTags_Tag_Name(tagName, PageRequest.of(0, size, Sort.by("id").descending()));
         } else {
             meetings = meetingRepository.findByTagNameAndIdLessThan(tagName, lastId, PageRequest.of(0, size, Sort.by("id").descending()));
         }
