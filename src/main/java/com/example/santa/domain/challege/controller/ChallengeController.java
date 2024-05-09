@@ -1,7 +1,6 @@
 package com.example.santa.domain.challege.controller;
 
 import com.example.santa.domain.challege.dto.ChallengeCreateDto;
-import com.example.santa.domain.challege.dto.ChallengeParticipationResponseDto;
 import com.example.santa.domain.challege.dto.ChallengeResponseDto;
 import com.example.santa.domain.challege.entity.Challenge;
 import com.example.santa.domain.challege.service.ChallengeService;
