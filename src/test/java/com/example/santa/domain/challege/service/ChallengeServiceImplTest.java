@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.example.santa.domain.category.entity.Category;
 import com.example.santa.domain.category.repository.CategoryRepository;
 import com.example.santa.domain.challege.dto.ChallengeCreateDto;
-import com.example.santa.domain.challege.dto.ChallengeParticipationResponseDto;
 import com.example.santa.domain.challege.dto.ChallengeResponseDto;
 import com.example.santa.domain.challege.entity.Challenge;
 import com.example.santa.domain.challege.repository.ChallengeRepository;
