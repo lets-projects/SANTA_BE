@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoriesRequestDto {
-    @Schema(description = "테스트 값", example = "1, 2, 3")
+    @Schema(description = "테스트 값", example = "[1, 2, 3]")
     List<Long> categoryIds;
 }

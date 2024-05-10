@@ -35,7 +35,7 @@ public class MeetingDto {
     @Schema(description = "테스트 값", example = "2024-05-20")
     @NotNull(message = "날짜를 입력하세요.")
     private LocalDate date;
-    @Schema(description = "테스트 값", example = "산행, 등산모임")
+    @Schema(description = "테스트 값", example = "[\"산행\", \"등산모임\"]")
     private List<String> tags;
     private String image;
     private MultipartFile imageFile;
