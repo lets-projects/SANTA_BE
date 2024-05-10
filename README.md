@@ -5,6 +5,7 @@
 
 ![스크린샷 2024-04-15 오전 10.59.33.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d85fd78d-de88-4966-9b27-62e3e2e8c2a0/40f99ae7-a2e5-486f-acdc-d98c283b078d/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-04-15_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_10.59.33.png)
 
+![santa](/uploads/413ad16b310405b6aec1d60fa728eb61/santa.png)
 ---
 
 ## **서비스 목적**
