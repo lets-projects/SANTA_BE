@@ -143,6 +143,8 @@
 - 프론트엔드 : 리액트, Redux 상태관리, SCSS
 - 백엔드: SpringBoot, SpringSecurity, JPA ,MySQL, Postman, JAVA 17, open jdk, jwt
 - 서버 : 도커, Nginx, Jenkins , AWS EC2 ,RDS, S3, ElastiCache
+
+
 [![stackticon](https://firebasestorage.googleapis.com/v0/b/stackticon-81399.appspot.com/o/images%2F1715331397794?alt=media&token=421c302a-2cef-4b14-84f5-ad6d6dc11cdb)](https://github.com/msdio/stackticon)
 
 ## 역할분담
