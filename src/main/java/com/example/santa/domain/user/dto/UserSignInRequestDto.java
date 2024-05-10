@@ -1,6 +1,5 @@
 package com.example.santa.domain.user.dto;
 
-import com.example.santa.domain.user.entity.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
