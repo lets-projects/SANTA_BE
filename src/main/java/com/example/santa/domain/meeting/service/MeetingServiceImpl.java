@@ -252,22 +252,36 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Page<MeetingResponseDto> getMeetingsByTagName(String tagName, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByMeetingTags_Tag_Name(tagName,pageable);
+        Page<Meeting> meetings = meetingRepository.findByMeetingTags_Tag_NameContaining(tagName,pageable);
         return meetings.map(this::convertToDto);
     }
 
 
 
     @Override
-    public Page<MeetingResponseDto> getMeetingsByCategoryName(String categoryName, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByCategory_Name(categoryName,pageable);
+    public Page<MeetingResponseDto> getMeetingsByCategoryName(String email, String categoryName, Pageable pageable) {
+        Page<Meeting> meetings;
+        System.out.println(email);
+        System.out.println(categoryName);
+        if(Objects.equals(categoryName, "맞춤추천")){
+            meetings = meetingRepository.findByUserEmailAndPreferredCategories(email,pageable); //선호 카테고리
+        }
+        else {
+            meetings = meetingRepository.findByCategory_Name(categoryName,pageable);
+        }
+
         return meetings.map(this::convertToDto);
     }
 
 
     @Override
     public Page<MeetingResponseDto> getAllMeetingsByParticipantCount(Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findAllByParticipantCount(pageable);
+        Page<Meeting> meetings = meetingRepository.findAllByParticipantCountAndDateAfterToday(pageable);
+        return meetings.map(this::convertToDto);
+    }
+
+    public Page<MeetingResponseDto> getAllMeetingsByPreferredCategory(String email, Pageable pageable) {
+        Page<Meeting> meetings = meetingRepository.findByUserEmailAndPreferredCategories(email,pageable);
         return meetings.map(this::convertToDto);
     }
 

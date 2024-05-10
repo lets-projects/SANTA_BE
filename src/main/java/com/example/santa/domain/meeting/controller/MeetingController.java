@@ -127,10 +127,11 @@ public class MeetingController {
     })
     @GetMapping("/category-search")
     public ResponseEntity<Page<MeetingResponseDto>> getMeetingsByCategoryName(@RequestParam(name = "category") String category,
+                                                                              @AuthenticationPrincipal String email,
                                                               @RequestParam(name = "page", defaultValue = "0") int page,
                                                               @RequestParam(name = "size", defaultValue = "5") int size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        return ResponseEntity.ok(meetingService.getMeetingsByCategoryName(category,pageRequest));
+        return ResponseEntity.ok(meetingService.getMeetingsByCategoryName(email,category,pageRequest));
     }
 
 
