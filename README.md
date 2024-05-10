@@ -171,6 +171,14 @@
 | 김경혜 | 팀원 |  |
 | 윤혜원 | 팀원 |  |
 | 진채영 | 팀원 |  |
+| Trainee        | Role         | Responsibilities                                |
+| -------------- | ------------ | ----------------------------------------------- |
+| Chaeyoung Jin  | Team Member  |                                                 |
+| Hyewon Yoon    | Team Member  |                                                 |
+| Jeonggyun Na   | Team Member  | backend<br>- user<br>- Security<br>- Jenkins    |
+| Jiwon Min      | Team Member  | backend<br>- class<br>- category<br>- Declaration<br>- Image upload (S3)<br>- Docker<br>- Jenkins |
+| Kyeonghye Kim  | Team Member  |                                                 |
+| Ok Chanhyuk    | Team Leader  | backend<br>- challenge<br>- Normal authentication<br>- ranking<br>- AOP logging<br>- Jenkins |
 
 ## 플로우차트
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/d85fd78d-de88-4966-9b27-62e3e2e8c2a0/c47ee521-d588-48f1-8453-6e2013572269/Untitled.png)
