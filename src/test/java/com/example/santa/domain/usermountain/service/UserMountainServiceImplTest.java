@@ -15,7 +15,6 @@ import com.example.santa.domain.usermountain.repository.UserMountainRepository;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +44,9 @@ public class UserMountainServiceImplTest {
     @Mock
     private UserMountainResponseDtoMapper userMountainResponseDtoMapper;
 
+    @Mock
+    private UserChallengeService userChallengeService;
+
     @InjectMocks
     private UserMountainServiceImpl userMountainService;
 
@@ -54,6 +56,8 @@ public class UserMountainServiceImplTest {
     private UserMountain userMountain;
     private UserMountainResponseDto responseDto;
     private UserMountainVerifyRequestDto requestDto;
+    private UserClimbMountainResponseDto userClimbMountainResponseDto;
+
 
     @BeforeEach
     void setUp() {
@@ -104,7 +108,7 @@ public class UserMountainServiceImplTest {
         when(userMountainRepository.save(any(UserMountain.class))).thenReturn(userMountain);
         when(userMountainResponseDtoMapper.toDto(any(UserMountain.class))).thenReturn(responseDto);
         UserMountainResponseDto result = userMountainService.verifyAndCreateUserMountain(requestDto, user.getEmail());
-        //chan@email.com으로 넣어도 테스트가 통과됩니다.
+
         assertNotNull(user);
         assertNotNull(category);
         assertNotNull(mountain);
