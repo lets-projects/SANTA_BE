@@ -18,7 +18,7 @@ public interface MeetingService {
     MeetingResponseDto updateMeeting(String email, Long id, MeetingDto meetingDto);
     void deleteMeeting(String email, Long id);
     Page<MeetingResponseDto> getMeetingsByTagName(String tagName, Pageable pageable);
-    Page<MeetingResponseDto> getMeetingsByCategoryName(String categoryName, Pageable pageable);
+    Page<MeetingResponseDto> getMeetingsByCategoryName(String email, String categoryName, Pageable pageable);
     Page<MeetingResponseDto> getAllMeetingsByParticipantCount(Pageable pageable);
     Page<MeetingResponseDto> getMyMeetings(String email, Pageable pageable);
     List<ParticipantDto> endMeeting(String email, Long id);

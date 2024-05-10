@@ -14,8 +14,13 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     Page<Meeting> findByCategory_Name(String categoryName, Pageable pageable);
 
-    @Query("SELECT m FROM Meeting m LEFT JOIN m.participant p GROUP BY m.id ORDER BY COUNT(p) DESC")
-    Page<Meeting> findAllByParticipantCount(Pageable pageable);
+    @Query("SELECT m FROM Meeting m WHERE m.category IN (SELECT pc.category FROM PreferredCategory pc WHERE pc.user.email = :email)")
+    Page<Meeting> findByUserEmailAndPreferredCategories(@Param("email") String userEmail, Pageable pageable);
+
+
+    @Query("SELECT m FROM Meeting m LEFT JOIN m.participant p WHERE m.date > CURRENT_DATE GROUP BY m.id ORDER BY COUNT(p) DESC")
+    Page<Meeting> findAllByParticipantCountAndDateAfterToday(Pageable pageable);
+
 
     @Query("SELECT m FROM Meeting m JOIN m.participant p WHERE p.user.id = :userId")
     Page<Meeting> findMeetingsByParticipantUserId(@Param("userId") Long userId, Pageable pageable);
