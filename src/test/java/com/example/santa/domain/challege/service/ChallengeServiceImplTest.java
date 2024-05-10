@@ -67,7 +67,7 @@ public class ChallengeServiceImplTest {
         challenge.setCategory(category);
 
         challengeCreateDto = new ChallengeCreateDto();
-        challengeCreateDto.setCategoryId(1L);
+        challengeCreateDto.setCategoryName("플로깅");
         challengeCreateDto.setName("100대 명산 등반");
         challengeCreateDto.setDescription("100대 명산을 전부 등반해보세요.");
         challengeCreateDto.setClearStandard(100);
@@ -91,7 +91,7 @@ public class ChallengeServiceImplTest {
     public void testSaveChallenge_WithDefaultImage() {
         challengeCreateDto.setImageFile(null);
 
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
         when(challengeRepository.save(any(Challenge.class))).thenReturn(challenge);
         when(challengeResponseMapper.toDto(challenge)).thenReturn(challengeResponseDto);
         ChallengeResponseDto result = challengeService.saveChallenge(challengeCreateDto);
@@ -105,7 +105,7 @@ public class ChallengeServiceImplTest {
     public void testSaveChallenge_WithNewImage() {
         MultipartFile imageFile = new MockMultipartFile("file", "test.png", "image/png", "test image content".getBytes());
         challengeCreateDto.setImageFile(imageFile);
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(category));
+        when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
         when(s3ImageService.upload(any(MultipartFile.class))).thenReturn("uploaded-image-url");
         when(challengeRepository.save(any(Challenge.class))).thenReturn(challenge);
         when(challengeResponseMapper.toDto(challenge)).thenReturn(challengeResponseDto);
@@ -150,7 +150,7 @@ public class ChallengeServiceImplTest {
 
     @Test
     public void testSaveChallenge_CategoryNotFound() {
-        when(categoryRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(categoryRepository.findByName(anyString())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {
             challengeService.saveChallenge(challengeCreateDto);
