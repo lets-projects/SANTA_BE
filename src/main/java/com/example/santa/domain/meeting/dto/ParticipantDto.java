@@ -1,7 +1,5 @@
 package com.example.santa.domain.meeting.dto;
 
-import com.example.santa.domain.meeting.entity.Participant;
-import com.example.santa.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

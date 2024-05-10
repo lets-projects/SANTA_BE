@@ -1,15 +1,11 @@
 package com.example.santa.domain.meeting.dto;
 
-import com.example.santa.domain.meeting.entity.MeetingTag;
-import com.example.santa.domain.meeting.entity.Participant;
-import com.example.santa.domain.meeting.entity.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter

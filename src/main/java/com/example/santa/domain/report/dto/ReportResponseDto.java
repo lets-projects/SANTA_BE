@@ -1,6 +1,5 @@
 package com.example.santa.domain.report.dto;
 
-import com.example.santa.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

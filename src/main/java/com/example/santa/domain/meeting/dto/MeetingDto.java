@@ -1,8 +1,5 @@
 package com.example.santa.domain.meeting.dto;
 
-import com.example.santa.domain.meeting.entity.MeetingTag;
-import com.example.santa.domain.meeting.entity.Participant;
-import com.example.santa.domain.meeting.entity.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -10,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,7 +17,7 @@ public class MeetingDto {
     private Long meetingId;
     private Long leaderId;
     private String userEmail;
-    //@NotBlank(message = "모임 이름을 입력하세요.")
+    @NotBlank(message = "모임 이름을 입력하세요.")
     private String meetingName;
     private String categoryName;
     private String mountainName;
