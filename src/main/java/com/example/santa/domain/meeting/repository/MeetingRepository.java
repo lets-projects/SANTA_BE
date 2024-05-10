@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
-    Page<Meeting> findByMeetingTags_Tag_Name(String tagName, Pageable pageable);
+    Page<Meeting> findByMeetingTags_Tag_NameContaining(String tagName, Pageable pageable);
 
     Page<Meeting> findByCategory_Name(String categoryName, Pageable pageable);
 

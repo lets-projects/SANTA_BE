@@ -252,7 +252,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public Page<MeetingResponseDto> getMeetingsByTagName(String tagName, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByMeetingTags_Tag_Name(tagName,pageable);
+        Page<Meeting> meetings = meetingRepository.findByMeetingTags_Tag_NameContaining(tagName,pageable);
         return meetings.map(this::convertToDto);
     }
 
