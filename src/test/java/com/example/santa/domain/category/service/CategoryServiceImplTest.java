@@ -37,7 +37,7 @@ class CategoryServiceImplTest {
 
     @Test
     void createCategory_Success() {
-//        when(categoryRepository.findByName("등산")).thenReturn(Optional.empty());
+        when(categoryRepository.findByName("등산")).thenReturn(Optional.empty());
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
 
         Category result = categoryService.createCategory("등산");
