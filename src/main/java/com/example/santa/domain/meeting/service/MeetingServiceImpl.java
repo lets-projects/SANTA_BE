@@ -16,6 +16,7 @@ import com.example.santa.domain.meeting.repository.TagRepository;
 import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
+import com.example.santa.domain.userchallenge.service.UserChallengeService;
 import com.example.santa.global.constant.Constants;
 import com.example.santa.global.exception.ExceptionCode;
 import com.example.santa.global.exception.ServiceLogicException;
@@ -41,8 +42,9 @@ public class MeetingServiceImpl implements MeetingService {
     private final ParticipantRepository participantRepository;
     private final ParticipantsDtoMapper participantsDtoMapper;
     private final S3ImageService s3ImageService;
+    private final UserChallengeService userChallengeService;
 
-    public MeetingServiceImpl(MeetingRepository meetingRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository, MeetingTagRepository meetingTagRepository, ParticipantRepository participantRepository, ParticipantsDtoMapper participantsDtoMapper, S3ImageService s3ImageService) {
+    public MeetingServiceImpl(MeetingRepository meetingRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository, MeetingTagRepository meetingTagRepository, ParticipantRepository participantRepository, ParticipantsDtoMapper participantsDtoMapper, S3ImageService s3ImageService, UserChallengeService userChallengeService) {
         this.meetingRepository = meetingRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -51,6 +53,7 @@ public class MeetingServiceImpl implements MeetingService {
         this.participantRepository = participantRepository;
         this.participantsDtoMapper = participantsDtoMapper;
         this.s3ImageService = s3ImageService;
+        this.userChallengeService = userChallengeService;
     }
 
     @Override
@@ -316,6 +319,11 @@ public class MeetingServiceImpl implements MeetingService {
 
         meetingRepository.save(meeting);
 
+        if(!Objects.equals(meeting.getCategory().getName(), "기타")){
+            for (ParticipantDto participant : participantsDtoMapper.toDtoList(meeting.getParticipant())){
+                userChallengeService.updateUserChallengeOnMeetingJoin(id, participant.getUserId());
+            }
+        }
         return participantsDtoMapper.toDtoList(meeting.getParticipant());
 
     }

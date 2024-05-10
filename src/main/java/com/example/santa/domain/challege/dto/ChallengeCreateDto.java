@@ -33,7 +33,7 @@ public class ChallengeCreateDto {
     @NotNull(message = "완료 기준은 필수 입력란 입니다.")
     @Min(value = 1, message = "1이상의 값을 입력해 주세요.")
     private Integer clearStandard;
-
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
 
     private MultipartFile imageFile;

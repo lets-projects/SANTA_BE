@@ -1,6 +1,7 @@
 package com.example.santa.domain.challege.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -16,6 +17,7 @@ public class ChallengeResponseDto {
     private String name;
     @Schema(description = "테스트 값", example = "힐링 모임에 5회 참여해보세요!")
     private String description;
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
     @Schema(description = "테스트 값", example = "5")
     private Integer clearStandard;

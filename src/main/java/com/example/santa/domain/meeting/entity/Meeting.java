@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class Meeting extends BaseEntity {
     private int headcount;
     @NotNull(message = "날짜를 입력하세요.")
     private LocalDate date;
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
     private boolean end = false;
 

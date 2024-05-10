@@ -4,7 +4,6 @@ import com.example.santa.domain.meeting.dto.MeetingDto;
 import com.example.santa.domain.meeting.dto.MeetingResponseDto;
 import com.example.santa.domain.meeting.dto.ParticipantDto;
 import com.example.santa.domain.meeting.service.MeetingService;
-import com.example.santa.domain.userchallenge.service.UserChallengeServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,11 +28,9 @@ import java.util.Map;
 public class MeetingController {
 
     private final MeetingService meetingService;
-    private final UserChallengeServiceImpl userChallengeService;
 
-    public MeetingController(MeetingService meetingService, UserChallengeServiceImpl userChallengeService) {
+    public MeetingController(MeetingService meetingService) {
         this.meetingService = meetingService;
-        this.userChallengeService = userChallengeService;
     }
 
     @Operation(summary = "모임 생성 기능", description = "모임 생성")
@@ -170,10 +167,6 @@ public class MeetingController {
                                         @PathVariable(name = "meetingId") Long id) {
 
         List<ParticipantDto> participants = meetingService.endMeeting(email, id);
-
-        for (ParticipantDto participant : participants){
-            userChallengeService.updateUserChallengeOnMeetingJoin(id, participant.getUserId());
-        }
 
         return ResponseEntity.ok(participants);
 

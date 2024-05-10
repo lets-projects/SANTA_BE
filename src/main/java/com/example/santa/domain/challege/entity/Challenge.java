@@ -7,6 +7,7 @@ import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -32,6 +33,7 @@ public class Challenge extends BaseEntity {
     private String description;
 
     @Column
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
 
     @Column

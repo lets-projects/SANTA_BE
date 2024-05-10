@@ -3,6 +3,7 @@ package com.example.santa.domain.meeting.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,7 @@ public class MeetingDto {
     private LocalDate date;
     @Schema(description = "테스트 값", example = "[\"산행\", \"등산모임\"]")
     private List<String> tags;
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
     private MultipartFile imageFile;
     // 참가자 정보는 모임 상세 조회 시에만 사용

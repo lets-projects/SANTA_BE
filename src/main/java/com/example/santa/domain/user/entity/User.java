@@ -9,6 +9,7 @@ import com.example.santa.domain.report.entity.Report;
 import com.example.santa.domain.userchallenge.entity.UserChallenge;
 import com.example.santa.domain.usermountain.entity.UserMountain;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,8 @@ public class User extends BaseEntity implements UserDetails {
     private String nickname;
 
     private String phoneNumber;
-
-    private String image = "/images/defaultProfile.png";
+    @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
+    private String image;
 
     @Enumerated(EnumType.STRING)
     private Role role;
