@@ -65,7 +65,6 @@
 <img alt="swagger" src ="https://img.shields.io/badge/swagger-85EA2D.svg?&style=for-the-badge&logo=swagger&logoColor=white"/>
 
 
-협업
 <br/>
 <img alt="gitlab" src ="https://img.shields.io/badge/gitlab-FC6D26.svg?&style=for-the-badge&logo=gitlab&logoColor=white"/>
 <img alt="figma" src ="https://img.shields.io/badge/figma-F24E1E.svg?&style=for-the-badge&logo=figma&logoColor=white"/>
@@ -74,16 +73,16 @@
 
 ## 서비스 기능 명세
 ---
-### 1. 유저 기능
-- Spring Security + JWT 기반 사용자 인증/인가
-- 회원
-    - 회원가입시 비밀번호 인코딩
-    - 이메일 인증(비밀번호 재발급)
-- 로그인
-    - AccessToken 과 RefreshToken 발급
-    - AccessToken 만료되면 RefreshToken으로 newAccessToken 발급
-    - 카카오 소셜로그인 성공 후 자체 JWT 발급
-- 선호 키워드 등록
+> ### 1. 유저 기능
+> - Spring Security + JWT 기반 사용자 인증/인가
+> - 회원
+>    - 회원가입시 비밀번호 인코딩
+>    - 이메일 인증(비밀번호 재발급)
+> - 로그인
+>    - AccessToken 과 RefreshToken 발급
+>    - AccessToken 만료되면 RefreshToken으로 newAccessToken 발급
+>    - 카카오 소셜로그인 성공 후 자체 JWT 발급
+> - 선호 키워드 등록
 
 ### 2. 모임 기능
 - 회원
