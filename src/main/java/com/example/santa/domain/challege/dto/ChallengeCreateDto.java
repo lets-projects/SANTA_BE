@@ -17,7 +17,7 @@ public class ChallengeCreateDto {
 
 
     @Schema(description = "테스트 값", example = "1")
-    private Long categoryId;
+    private String categoryName;
 
     @Schema(description = "테스트 값", example = "힐링 모임 5회 참여")
     @NotNull(message = "업적 명은 필수 입력란 입니다.")

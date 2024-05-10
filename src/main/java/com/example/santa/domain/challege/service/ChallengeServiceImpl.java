@@ -46,7 +46,7 @@ public class ChallengeServiceImpl implements ChallengeService{
     @Transactional
     @Override
     public ChallengeResponseDto saveChallenge(ChallengeCreateDto challengeCreateDto) {
-        Category category = categoryRepository.findById(challengeCreateDto.getCategoryId())
+        Category category = categoryRepository.findByName(challengeCreateDto.getCategoryName())
                 .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
 
         MultipartFile imageFile = challengeCreateDto.getImageFile();
@@ -84,6 +84,8 @@ public class ChallengeServiceImpl implements ChallengeService{
 
     @Override
     public ChallengeResponseDto updateChallenge(Long id, ChallengeCreateDto challengeCreateDto) {
+        Category category = categoryRepository.findByName(challengeCreateDto.getCategoryName())
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CATEGORY_NOT_FOUND));
         MultipartFile imageFile = challengeCreateDto.getImageFile();
         String imageUrl = challengeCreateDto.getImage();
 
@@ -98,6 +100,7 @@ public class ChallengeServiceImpl implements ChallengeService{
             Challenge challenge = challengeRepository.findById(id).get();
             challenge.setName(challengeCreateDto.getName());
             challenge.setDescription(challengeCreateDto.getDescription());
+            challenge.setCategory(category);
             challenge.setImage(imageUrl);
             challenge.setClearStandard(challengeCreateDto.getClearStandard());
             challenge = challengeRepository.save(challenge);
