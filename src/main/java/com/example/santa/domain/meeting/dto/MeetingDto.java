@@ -16,10 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class MeetingDto {
-    @Schema(description = "테스트 값", example = "1")
-    private Long meetingId;
-    @Schema(description = "테스트 값", example = "10")
-    private Long leaderId;
+
     @Schema(description = "테스트 값", example = "산악회")
     @NotBlank(message = "모임 이름을 입력하세요.")
     private String meetingName;
@@ -41,7 +38,6 @@ public class MeetingDto {
     @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;
     private MultipartFile imageFile;
-    // 참가자 정보는 모임 상세 조회 시에만 사용
-    private List<ParticipantDto> participants;
+
 
 }
