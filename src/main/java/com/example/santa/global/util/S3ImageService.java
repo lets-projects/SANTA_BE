@@ -67,7 +67,7 @@ public class S3ImageService {
 
     private String uploadImageToS3(MultipartFile image) throws IOException {
         String originalFilename = image.getOriginalFilename(); //원본 파일 명
-        String extention = originalFilename.substring(originalFilename.lastIndexOf(".")); //확장자 명
+        String extention = originalFilename.substring(originalFilename.lastIndexOf(".")+1); //확장자 명
 
         String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename; //변경된 파일 명
 
@@ -92,7 +92,8 @@ public class S3ImageService {
             is.close();
         }
 
-        return amazonS3.getUrl(bucketName, s3FileName).toString();
+        String s3Url = String.format("https://s3.%s.amazonaws.com/%s/%s", "ap-northeast-2", bucketName, s3FileName);
+        return s3Url;
     }
 
     public void deleteImageFromS3(String imageAddress){
