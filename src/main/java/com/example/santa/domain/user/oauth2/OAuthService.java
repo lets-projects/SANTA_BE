@@ -31,7 +31,7 @@ public class OAuthService {
                             .nickname(null)
                             .phoneNumber(null)
                             .image(Constants.DEFAULT_URL + "user_default_image.png")
-                            .role(Role.USER)
+                            .role(Role.GUEST)
                             .socialType(oauthUser.socialType())
                             .socialId(null) // 필요하다면 OAuthUser에서 소셜 ID를 가져와 설정
                             .build();

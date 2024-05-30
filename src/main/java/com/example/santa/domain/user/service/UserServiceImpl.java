@@ -165,7 +165,8 @@ public class UserServiceImpl implements UserService {
                 .update(userUpdateRequestDto.getNickname()
                         , userUpdateRequestDto.getPhoneNumber()
                         , userUpdateRequestDto.getName()
-                        , imageUrl);
+                        , imageUrl
+                        , Role.USER);
 
         return userResponseDtoMapper.toDto(user);
     }
