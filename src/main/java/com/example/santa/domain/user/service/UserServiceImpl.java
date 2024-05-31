@@ -181,12 +181,16 @@ public class UserServiceImpl implements UserService {
             // 신고된 이력이 있다면 탈퇴 처리를 막음
             throw new ServiceLogicException(ExceptionCode.USER_REPORT_EXIST);
         }
+        s3ImageService.deleteImageFromS3(user.getImage());
         userRepository.delete(user);
     }
 
     @Transactional
     @Override
     public void deleteUserFromAdmin(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.USER_NOT_FOUND));
+        s3ImageService.deleteImageFromS3(user.getImage());
         userRepository.deleteById(id);
     }
 

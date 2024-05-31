@@ -111,7 +111,9 @@ public class ChallengeServiceImpl implements ChallengeService{
 
     @Override
     public void deleteChallenge(Long id) {
-
+        Challenge challenge = challengeRepository.findById(id)
+                .orElseThrow(() -> new ServiceLogicException(ExceptionCode.CHALLENGE_NOT_FOUND));
+        s3ImageService.deleteImageFromS3(challenge.getImage());
         challengeRepository.deleteById(id);
     }
 

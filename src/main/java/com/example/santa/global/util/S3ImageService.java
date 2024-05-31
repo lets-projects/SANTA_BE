@@ -2,6 +2,7 @@ package com.example.santa.global.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
@@ -24,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -96,10 +99,18 @@ public class S3ImageService {
         return s3Url;
     }
 
+
     public void deleteImageFromS3(String imageAddress){
+        String pattern = ".+/([^/]+\\.jpg)$";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(imageAddress);
+        if (m.find()) {
+            imageAddress = amazonS3.getUrl(bucketName,  m.group(1)).toString();
+        }
         String key = getKeyFromImageAddress(imageAddress);
         try{
-            amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
+            DeleteObjectsRequest delObjReq = new DeleteObjectsRequest(bucketName).withKeys(key);
+            amazonS3.deleteObjects(delObjReq);
         }catch (Exception e){
             throw new ServiceLogicException(ExceptionCode.IO_EXCEPTION_ON_IMAGE_DELETE);
         }

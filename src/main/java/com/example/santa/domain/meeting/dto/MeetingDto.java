@@ -34,6 +34,7 @@ public class MeetingDto {
     @NotNull(message = "날짜를 입력하세요.")
     private LocalDate date;
     @Schema(description = "테스트 값", example = "[\"산행\", \"등산모임\"]")
+    @NotNull(message = "한 개 이상의 태그를 입력해주세요.")
     private List<String> tags;
     @Size(max = 1000, message = "이미지명이 너무 깁니다(한글)")
     private String image;

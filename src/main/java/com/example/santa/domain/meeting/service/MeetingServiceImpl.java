@@ -193,12 +193,9 @@ public class MeetingServiceImpl implements MeetingService {
 
         MultipartFile imageFile = meetingDto.getImageFile();
         String imageUrl = meetingDto.getImage();
-        System.out.println(imageUrl);
 
         if (imageFile != null && !imageFile.isEmpty()) {
             if(!Objects.equals(imageUrl, Constants.DEFAULT_URL + "meeting_default_image.png")){
-                System.out.println(imageUrl);
-                System.out.println("이미지 다름");
                 s3ImageService.deleteImageFromS3(imageUrl);
             }
             imageUrl = s3ImageService.upload(imageFile);
@@ -245,6 +242,7 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         if (Objects.equals(user.getId(), meeting.getLeader().getId()) || user.getRole() == Role.ADMIN){
+            s3ImageService.deleteImageFromS3(meeting.getImage());
             meetingRepository.deleteById(id);
         }
         else{
@@ -282,12 +280,6 @@ public class MeetingServiceImpl implements MeetingService {
         Page<Meeting> meetings = meetingRepository.findAllByParticipantCountAndDateAfterToday(pageable);
         return meetings.map(this::convertToDto);
     }
-
-    public Page<MeetingResponseDto> getAllMeetingsByPreferredCategory(String email, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByUserEmailAndPreferredCategories(email,pageable);
-        return meetings.map(this::convertToDto);
-    }
-
 
 
     @Override
