@@ -144,6 +144,7 @@ public class ChallengeServiceImplTest {
 
     @Test
     public void testDeleteChallenge() {
+        when(challengeRepository.findById(1L)).thenReturn(Optional.of(challenge));
         challengeService.deleteChallenge(1L);
         verify(challengeRepository).deleteById(1L);
     }
