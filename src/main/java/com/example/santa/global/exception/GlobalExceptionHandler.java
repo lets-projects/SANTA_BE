@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,13 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.REQUEST_ENTITY_TOO_LARGE, "업로드 파일 크기가 너무 큽니다.");
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
 
     // ErrorResponse 클래스 (내부 클래스로 정의)
     @Getter
