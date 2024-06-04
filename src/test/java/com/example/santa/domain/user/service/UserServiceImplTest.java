@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.example.santa.domain.category.entity.Category;
+import com.example.santa.domain.challege.entity.Challenge;
+import com.example.santa.domain.rank.dto.RankingResponseDto;
+import com.example.santa.domain.rank.entity.Ranking;
+import com.example.santa.domain.rank.repository.RankingRepository;
 import com.example.santa.domain.report.repository.ReportRepository;
 import com.example.santa.domain.user.dto.UserResponseDto;
 import com.example.santa.domain.user.dto.UserSignInRequestDto;
@@ -14,10 +19,19 @@ import com.example.santa.domain.user.entity.Password;
 import com.example.santa.domain.user.entity.Role;
 import com.example.santa.domain.user.entity.User;
 import com.example.santa.domain.user.repository.UserRepository;
+import com.example.santa.domain.userchallenge.dto.UserChallengeCompletionResponseDto;
+import com.example.santa.domain.userchallenge.entity.UserChallenge;
+import com.example.santa.domain.userchallenge.service.UserChallengeService;
+import com.example.santa.domain.usermountain.dto.UserMountainResponseDto;
+import com.example.santa.domain.usermountain.entity.UserMountain;
+import com.example.santa.domain.usermountain.service.UserMountainService;
+import com.example.santa.domain.usermountain.service.UserMountainServiceImpl;
 import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
 import com.example.santa.global.util.S3ImageService;
+import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
+import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserResponseDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +41,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.data.domain.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,8 +59,16 @@ public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private RankingRepository rankingRepository;
+
     @Mock
     private UserResponseDtoMapper userResponseDtoMapper;
+    @Mock
+    private UserMountainResponseDtoMapper userMountainResponseDtoMapper;
+    @Mock
+    private UserChallengeCompletionResponseMapper userChallengeCompletionResponseMapper;
     @Mock
     private AuthenticationManagerBuilder authenticationManagerBuilder;
     @Mock
@@ -53,14 +80,25 @@ public class UserServiceImplTest {
     @Mock
     private ReportRepository reportRepository;
 
+    @Mock
+    private UserMountainService userMountainService;
+
     @InjectMocks
     private UserServiceImpl userService;
     private User user;
+
+    private User rankingUser;
+    private UserMountain userMountain;
+    private Challenge challenge;
+    private UserChallenge userChallenge;
+    private Ranking ranking;
     private Authentication authentication;
     private UserSignupRequestDto requestDto;
     private UserUpdateRequestDto updateRequestDto;
     private UserSignInRequestDto signInRequestDto;
     private UserResponseDto userResponseDto;
+    private UserMountainResponseDto userMountainresponseDto;
+    private UserChallengeCompletionResponseDto userChallengeCompletionResponseDto;
     private String existingImageUrl;
     private String newImageUrl;
 
@@ -102,6 +140,35 @@ public class UserServiceImplTest {
         userResponseDto.setName(user.getName());
         userResponseDto.setPhoneNumber(user.getPhoneNumber());
         userResponseDto.setAccumulatedHeight(user.getAccumulatedHeight());
+
+        userMountainresponseDto = new UserMountainResponseDto();
+        userMountainresponseDto.setClimbDate(LocalDate.now());
+        userMountainresponseDto.setMountainHeight(1000.1);
+        userMountainresponseDto.setMountainName("관악산");
+        userMountainresponseDto.setMountainLocation("서울시 관악구");
+        userMountainresponseDto.setId(1L);
+
+
+        userMountain = new UserMountain();
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("100대 명산 등산");
+
+        userMountain.setCategory(category);
+
+        challenge = new Challenge();
+        challenge.setId(1L);
+        challenge.setClearStandard(5);
+
+        userChallenge = new UserChallenge();
+        userChallenge.setProgress(0);
+        userChallenge.setUser(user);
+        userChallenge.setChallenge(challenge);
+
+        ranking = new Ranking();
+        ranking.setUser(user);
+        ranking.setScore(1000);
+
 
         existingImageUrl = "http://example.com/original-image.jpg";
         newImageUrl = "http://example.com/new-uploaded-image.jpg";
@@ -287,5 +354,121 @@ public class UserServiceImplTest {
     }
 
  */
+//    @Test
+//    void testFindAllUserMountains() {
+//        // Given
+//        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+//        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+//        when(userRepository.findUserMountainsByUserId(any(Long.class), any(Pageable.class)))
+//                .thenReturn(new PageImpl<>(Arrays.asList(userMountain)));
+//        when(userMountainResponseDtoMapper.toDto(any(UserMountain.class))).thenReturn(userMountainresponseDto);
+//
+//        // When
+//        Page<UserMountainResponseDto> result = userService.findAllUserMountains(user.getEmail(), pageable);
+//
+//        // Then
+//        assertNotNull(result);
+//        assertEquals(1, result.getTotalElements());
+//        assertEquals(userMountainresponseDto, result.getContent().get(0));
+//
+//        verify(userRepository, times(1)).findByEmail(user.getEmail());
+//        verify(userRepository, times(1)).findUserMountainsByUserId(user.getId(), pageable);
+//        verify(userMountainResponseDtoMapper, times(1)).toDto(userMountain);
+//    }
 
+    @Test
+    void testFindAllUserMountains() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findUserMountainsByUserId(any(Long.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Arrays.asList(userMountain)));
+        when(userMountainResponseDtoMapper.toDto(eq(userMountain))).thenReturn(userMountainresponseDto);
+
+
+        // When
+        Page<UserMountainResponseDto> result = userService.findAllUserMountains(user.getEmail(), pageable);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(userMountainresponseDto, result.getContent().get(0));
+
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(userRepository, times(1)).findUserMountainsByUserId(user.getId(), pageable);
+        verify(userMountainResponseDtoMapper, times(1)).toDto(userMountain);
+    }
+
+    @Test
+    void testFindChallengesByCompletion() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByUserIdAndIsCompletedTrue(user.getId(), pageable))
+                .thenReturn(new PageImpl<>(Arrays.asList(userChallenge)));
+        when(userRepository.findByUserIdAndIsCompletedNull(user.getId(), pageable))
+                .thenReturn(new PageImpl<>(Arrays.asList(userChallenge)));
+        when(userChallengeCompletionResponseMapper.toDto(userChallenge)).thenReturn(userChallengeCompletionResponseDto);
+
+        Page<UserChallengeCompletionResponseDto> resultCompleted = userService.findChallengesByCompletion(user.getEmail(), true, pageable);
+        assertNotNull(resultCompleted);
+        assertEquals(1, resultCompleted.getTotalElements());
+        assertEquals(userChallengeCompletionResponseDto, resultCompleted.getContent().get(0));
+
+        Page<UserChallengeCompletionResponseDto> resultIncomplete = userService.findChallengesByCompletion(user.getEmail(), false, pageable);
+        assertNotNull(resultIncomplete);
+        assertEquals(1, resultIncomplete.getTotalElements());
+        assertEquals(userChallengeCompletionResponseDto, resultIncomplete.getContent().get(0));
+
+        verify(userRepository, times(2)).findByEmail(user.getEmail());
+        verify(userRepository, times(1)).findByUserIdAndIsCompletedTrue(user.getId(), pageable);
+        verify(userRepository, times(1)).findByUserIdAndIsCompletedNull(user.getId(), pageable);
+        verify(userChallengeCompletionResponseMapper, times(2)).toDto(userChallenge);  // Adjust to expect 2 invocations
+
+    }
+
+    @Test
+    void testGetIndividualRanking() {
+        // Mock data
+
+        rankingUser = new User();
+        rankingUser.setId(2L);
+        rankingUser.setEmail("ranking@email.com");
+        rankingUser.setName("ranking");
+        rankingUser.setNickname("ranking");
+        rankingUser.setPhoneNumber("01011111111");
+        rankingUser.setPassword(new Password("Password1!"));
+        rankingUser.setRole(Role.ADMIN);
+        rankingUser.setImage("http://example.com/original-image.jpg");
+        rankingUser.setAccumulatedHeight(1000);
+
+        Ranking ranking1 = new Ranking();
+        ranking1.setId(1L);
+        ranking1.setScore(1000);
+        ranking1.setUser(user);
+
+        Ranking ranking2 = new Ranking();
+        ranking2.setId(2L);
+        ranking2.setScore(1500);
+        ranking2.setUser(rankingUser);
+
+        List<Ranking> rankings = new ArrayList<>();
+        rankings.add(ranking1);
+        rankings.add(ranking2);
+
+        // Mock behavior
+        when(rankingRepository.findAllByOrderByScoreDesc()).thenReturn(rankings);
+
+        // Test
+        RankingResponseDto expectedResponseDto = new RankingResponseDto(1L, ranking1.getId(), ranking1.getUser().getNickname(), ranking1.getUser().getImage(), ranking1.getScore());
+        RankingResponseDto actualResponseDto = userService.getIndividualRanking(user.getEmail());
+
+//        assertEquals(expectedResponseDto, actualResponseDto);
+        assertEquals(expectedResponseDto.getId(), actualResponseDto.getId());
+        assertEquals(expectedResponseDto.getNickname(), actualResponseDto.getNickname());
+        assertEquals(expectedResponseDto.getImage(), actualResponseDto.getImage());
+        assertEquals(expectedResponseDto.getScore(), actualResponseDto.getScore());
+        verify(rankingRepository, times(1)).findAllByOrderByScoreDesc();
+    }
 }
+
