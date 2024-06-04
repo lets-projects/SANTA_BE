@@ -113,4 +113,7 @@ class UserChallengeServiceImplTest {
         UserChallenge secondCapture = capturedChallenges.get(1);
 
     }
+
 }
+
+

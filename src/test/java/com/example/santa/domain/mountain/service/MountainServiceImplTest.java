@@ -77,7 +77,6 @@ public class MountainServiceImplTest {
 
     @Test
     void findMountainById_throwsExceptionWhenNotFound() {
-        // findMountainById()가 주어진 ID에 대한 산을 찾지 못했을 때 예외를 던지는지 테스트합니다
         when(mountainRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ServiceLogicException.class, () -> mountainService.findMountainById(anyLong()));

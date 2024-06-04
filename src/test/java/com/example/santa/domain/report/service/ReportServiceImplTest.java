@@ -59,7 +59,6 @@ public class ReportServiceImplTest {
         report.setReportedParticipant(reportedParticipant);
         report.setReason("Inappropriate behavior");
 
-        // DTO Setup
         reportRequestDto = new ReportRequestDto();
         reportRequestDto.setReason("Inappropriate behavior");
         reportRequestDto.setReportedParticipantId(1L);
