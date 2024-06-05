@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     private final ReportRepository reportRepository;
     private final UserMountainResponseDtoMapper userMountainResponseDtoMapper;
     private final PreferredCategoryResponseDtoMapper preferredCategoryResponseDtoMapper;
-    private final UserChallengeCompletionResponseMapper userChallengeCompletionResponseMapperResponseMapper;
+    private final UserChallengeCompletionResponseMapper userChallengeCompletionResponseMapper;
 
     @Transactional
     @Override
@@ -215,10 +215,10 @@ public class UserServiceImpl implements UserService {
         Page<UserChallengeCompletionResponseDto> completionDto;
         if (completion) {
             completionDto = userRepository.findByUserIdAndIsCompletedTrue(byEmail.getId(), pageable)
-                    .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
+                    .map(userChallengeCompletionResponseMapper::toDto);
         } else {
             completionDto = userRepository.findByUserIdAndIsCompletedNull(byEmail.getId(), pageable)
-                    .map(userChallengeCompletionResponseMapperResponseMapper::toDto);
+                    .map(userChallengeCompletionResponseMapper::toDto);
         }
         return completionDto;
     }
