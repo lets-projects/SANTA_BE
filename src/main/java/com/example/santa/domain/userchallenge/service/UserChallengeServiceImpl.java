@@ -34,7 +34,6 @@ public class UserChallengeServiceImpl implements UserChallengeService{
     @Autowired
     public UserChallengeServiceImpl(UserChallengeRepository userChallengeRepository
             ,ChallengeRepository challengeRepository
-            ,CategoryRepository categoryRepository
             ,UserRepository userRepository
             ,UserMountainRepository userMountainRepository
             ,MeetingRepository meetingRepository){
@@ -60,11 +59,10 @@ public class UserChallengeServiceImpl implements UserChallengeService{
         for (Challenge challenge : challenges) {
             UserChallenge userChallenge = userChallengeRepository.findByUserAndChallengeId(user, challenge.getId())
                     .orElseGet(() -> {
-                        // 새로운 UserChallenge 생성
                         UserChallenge newUserChallenge = UserChallenge.builder()
                                 .user(user)
                                 .challenge(challenge)
-                                .progress(0) // 초기 진행 상태는 0
+                                .progress(0)
                                 .build();
                         return userChallengeRepository.save(newUserChallenge);
                     });
@@ -76,7 +74,7 @@ public class UserChallengeServiceImpl implements UserChallengeService{
             // clearStandard와 progress가 일치하면 성공 처리
             if (userChallenge.getProgress().equals(challenge.getClearStandard())) {
                 userChallenge.setIsCompleted(true);
-                userChallenge.setCompletionDate(LocalDate.now()); // 성공일자는 현재 날짜로 설정
+                userChallenge.setCompletionDate(LocalDate.now());
             }
 
             userChallengeRepository.save(userChallenge);

@@ -77,14 +77,13 @@ public class UserMountainServiceImpl implements UserMountainService {
                     .climbDate(userMountainVerifyRequestDto.getClimbDate())
                     .mountain(mountain)
                     .user(user)
-                    .category(category) //기타 카테고리 고정
+                    .category(category)
                     .build());
 
             double newAccumulatedHeight = user.getAccumulatedHeight() + mountain.getHeight();
             user.setAccumulatedHeight(newAccumulatedHeight);
             userRepository.save(user);
 
-            // UserChallenge 생성 후 호출
             userChallengeService.updateProgress(user.getEmail(), save.getId());
 
             return userMountainResponseDtoMapper.toDto(save);
