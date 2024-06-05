@@ -6,7 +6,11 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.santa.domain.category.entity.Category;
+import com.example.santa.domain.category.repository.CategoryRepository;
 import com.example.santa.domain.challege.entity.Challenge;
+import com.example.santa.domain.preferredcategory.dto.PreferredCategoryResponseDto;
+import com.example.santa.domain.preferredcategory.entity.PreferredCategory;
+import com.example.santa.domain.preferredcategory.repository.PreferredCategoryRepository;
 import com.example.santa.domain.rank.dto.RankingResponseDto;
 import com.example.santa.domain.rank.entity.Ranking;
 import com.example.santa.domain.rank.repository.RankingRepository;
@@ -30,6 +34,7 @@ import com.example.santa.global.exception.ServiceLogicException;
 import com.example.santa.global.security.jwt.JwtToken;
 import com.example.santa.global.security.jwt.JwtTokenProvider;
 import com.example.santa.global.util.S3ImageService;
+import com.example.santa.global.util.mapsturct.PreferredCategoryResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserChallengeCompletionResponseMapper;
 import com.example.santa.global.util.mapsturct.UserMountainResponseDtoMapper;
 import com.example.santa.global.util.mapsturct.UserResponseDtoMapper;
@@ -82,6 +87,16 @@ public class UserServiceImplTest {
 
     @Mock
     private UserMountainService userMountainService;
+
+    @Mock
+    private PreferredCategoryRepository preferredCategoryRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private PreferredCategoryResponseDtoMapper preferredCategoryResponseDtoMapper;
+
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -469,6 +484,79 @@ public class UserServiceImplTest {
         assertEquals(expectedResponseDto.getImage(), actualResponseDto.getImage());
         assertEquals(expectedResponseDto.getScore(), actualResponseDto.getScore());
         verify(rankingRepository, times(1)).findAllByOrderByScoreDesc();
+    }
+
+    @Test
+    void testSavePreferredCategories() {
+        // Given
+        List<Long> categoryIds = Arrays.asList(1L, 2L, 3L);
+        Category category1 = Category.builder().id(1L).build();
+        Category category2 = Category.builder().id(2L).build();
+        Category category3 = Category.builder().id(3L).build();
+        List<Long> createdPreferredCategories = Arrays.asList(11L, 12L, 13L);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(category1));
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category2));
+        when(categoryRepository.findById(3L)).thenReturn(Optional.of(category3));
+        when(preferredCategoryRepository.save(any(PreferredCategory.class))).thenReturn(PreferredCategory.builder().id(11L).build())
+                .thenReturn(PreferredCategory.builder().id(12L).build())
+                .thenReturn(PreferredCategory.builder().id(13L).build());
+
+        // When
+        List<Long> result = userService.savePreferredCategories(user.getEmail(), categoryIds);
+
+        // Then
+        assertEquals(result, createdPreferredCategories);
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(categoryRepository, times(3)).findById(anyLong());
+        verify(preferredCategoryRepository, times(3)).save(any(PreferredCategory.class));
+    }
+    @Test
+    void findAllPreferredCategories() {
+        // Given
+        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).category(Category.builder().id(1L).name("등산").build()).build();
+        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).category(Category.builder().id(2L).name("식도릭").build()).build();
+        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
+        List<PreferredCategoryResponseDto> expectedDtoList = new ArrayList<>();
+        PreferredCategoryResponseDto dto1 = new PreferredCategoryResponseDto();
+        dto1.setCategoryName("등산");
+        PreferredCategoryResponseDto dto2 = new PreferredCategoryResponseDto();
+        dto2.setCategoryName("식도락");
+        expectedDtoList.add(dto1);
+        expectedDtoList.add(dto2);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
+        when(preferredCategoryResponseDtoMapper.toDtoList(preferredCategories)).thenReturn(expectedDtoList);
+
+        // When
+        List<PreferredCategoryResponseDto> result = userService.findAllPreferredCategories(user.getEmail());
+
+        // Then
+        assertEquals(result, expectedDtoList);
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
+        verify(preferredCategoryResponseDtoMapper, times(1)).toDtoList(preferredCategories);
+    }
+
+    @Test
+    void deleteAllPreferredCategory() {
+        // Given
+        PreferredCategory preferredCategory1 = PreferredCategory.builder().id(1L).user(user).build();
+        PreferredCategory preferredCategory2 = PreferredCategory.builder().id(2L).user(user).build();
+        List<PreferredCategory> preferredCategories = Arrays.asList(preferredCategory1, preferredCategory2);
+
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(preferredCategoryRepository.findAllByUserId(user.getId())).thenReturn(preferredCategories);
+
+        // When
+        userService.deleteAllPreferredCategory(user.getEmail());
+
+        // Then
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
+        verify(preferredCategoryRepository, times(1)).findAllByUserId(user.getId());
+        verify(preferredCategoryRepository, times(1)).deleteAll(preferredCategories);
     }
 }
 
