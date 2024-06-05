@@ -32,7 +32,6 @@ public class RankingServiceImpl implements RankingService{
     }
 
     @Transactional
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     @Scheduled(cron = "0 * * * * *") // 매분 0초마다 실행
     @Override
     public void updateAllRanks() {
@@ -63,8 +62,7 @@ public class RankingServiceImpl implements RankingService{
     @Override
     public Optional<RankingResponseDto> getRankingByEmail(String email) {
         Optional<Ranking> ranking = rankingRepository.findByUserEmail(email);
-        //Required type: Long
-        //Provided: int
+
         return ranking.map(r -> new RankingResponseDto(
                 r.getId(),
                 (long) (rankingRepository.countByScoreGreaterThan(r.getScore()) + 1),
