@@ -39,8 +39,8 @@ public class ChallengeController {
 
     }
 
-    //챌린지 ID로 조회
-    @Operation(summary = "챌린지 조회 기능", description = "챌린지 고유 id로 검색")
+
+    @Operation(summary = "챌린지 개별 조회 기능", description = "챌린지 고유 id로 검색")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공", content = @Content(schema = @Schema(implementation =ChallengeResponseDto.class)))})
     @GetMapping("/{id}")
