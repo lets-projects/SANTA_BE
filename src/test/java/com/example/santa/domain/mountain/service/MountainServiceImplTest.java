@@ -15,7 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,7 +65,21 @@ public class MountainServiceImplTest {
         pageable = mock(Pageable.class);
     }
 
+    @Test
+    void findAllMountains_success() {
+        List<Mountain> mountainList = List.of(mountain);
+        Page<Mountain> mountainPage = new PageImpl<>(mountainList);
+        when(mountainRepository.findAll(pageable)).thenReturn(mountainPage);
+        when(mountainResponseDtoMapper.toDto(mountain)).thenReturn(dto);
 
+        Page<MountainResponseDto> result = mountainService.findAllMountains(pageable);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(dto, result.getContent().get(0));
+        verify(mountainRepository).findAll(pageable);
+        verify(mountainResponseDtoMapper).toDto(mountain);
+    }
     @Test
     void getMountainById_success() {
         when(mountainRepository.findById(anyLong())).thenReturn(Optional.of(mountain));
