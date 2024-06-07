@@ -114,7 +114,6 @@ public class ReportServiceImplTest {
 
         Page<ReportResponseDto> results = reportService.getReports(pageRequest);
 
-        System.out.println(results.getContent());
 
         assertNotNull(results);
         assertEquals(1, results.getContent().size());

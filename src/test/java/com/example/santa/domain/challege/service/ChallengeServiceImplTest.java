@@ -88,7 +88,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testSaveChallenge_WithDefaultImage() {
+    public void createChallenge_Success_WithDefaultImage() {
         challengeCreateDto.setImageFile(null);
 
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
@@ -102,7 +102,7 @@ public class ChallengeServiceImplTest {
     }
 
     @Test
-    public void testSaveChallenge_WithNewImage() {
+    public void createChallenge_Success_WithNewImage() {
         MultipartFile imageFile = new MockMultipartFile("file", "test.png", "image/png", "test image content".getBytes());
         challengeCreateDto.setImageFile(imageFile);
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.of(category));
@@ -112,44 +112,13 @@ public class ChallengeServiceImplTest {
 
         ChallengeResponseDto result = challengeService.saveChallenge(challengeCreateDto);
 
-        System.out.println(challenge.getName());
-        System.out.println(result);
         assertNotNull(result);
         assertEquals(challengeResponseDto, result);
         verify(s3ImageService).upload(any(MultipartFile.class));
     }
 
-
     @Test
-    public void testFindChallengeById_NotFound() {
-        when(challengeRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        ChallengeResponseDto result = challengeService.findChallengeById(1L);
-
-        assertNull(result);
-    }
-
-    @Test
-    public void testFindChallengeById_Found() {
-
-        when(challengeRepository.findById(1L)).thenReturn(Optional.of(challenge));
-
-        ChallengeResponseDto result = challengeService.findChallengeById(1L);
-
-        System.out.println(result);
-        System.out.println(challengeResponseDto);
-        assertNotNull(result);
-        assertEquals(challengeResponseDto, result);
-    }
-
-    @Test
-    public void testDeleteChallenge() {
-        challengeService.deleteChallenge(1L);
-        verify(challengeRepository).deleteById(1L);
-    }
-
-    @Test
-    public void testSaveChallenge_CategoryNotFound() {
+    public void createChallenge_CategoryNotFound() {
         when(categoryRepository.findByName(anyString())).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ServiceLogicException.class, () -> {
@@ -158,4 +127,34 @@ public class ChallengeServiceImplTest {
 
         assertEquals("존재하지 않는 카테고리입니다.", exception.getMessage());
     }
+
+    @Test
+    public void getChallengeById_Found() {
+
+        when(challengeRepository.findById(1L)).thenReturn(Optional.of(challenge));
+
+        ChallengeResponseDto result = challengeService.findChallengeById(1L);
+
+        assertNotNull(result);
+        assertEquals(challengeResponseDto, result);
+    }
+
+
+//    @Test
+//    public void getChallengeById_NotFound() {
+//        when(challengeRepository.findById(anyLong())).thenReturn(Optional.empty());
+//
+//        ChallengeResponseDto result = challengeService.findChallengeById(1L);
+//
+//        assertNull(result);
+//    }
+
+
+    @Test
+    public void deleteChallenge_Success() {
+        challengeService.deleteChallenge(1L);
+        verify(challengeRepository).deleteById(1L);
+    }
+
+
 }

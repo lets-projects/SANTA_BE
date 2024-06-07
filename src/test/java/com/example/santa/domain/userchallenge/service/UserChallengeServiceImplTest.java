@@ -107,10 +107,9 @@ class UserChallengeServiceImplTest {
 
         List<UserChallenge> capturedChallenges = userChallengeCaptor.getAllValues();
 
-        UserChallenge firstCapture = capturedChallenges.get(0);
-        assertEquals(1, firstCapture.getProgress());
-        assertNull(firstCapture.getIsCompleted());
-        UserChallenge secondCapture = capturedChallenges.get(1);
+        UserChallenge capture = capturedChallenges.get(0);
+        assertEquals(1, capture.getProgress());
+        assertNull(capture.getIsCompleted());
 
     }
 

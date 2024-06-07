@@ -63,20 +63,19 @@ public class MountainServiceImplTest {
 
 
     @Test
-    void findMountainById_returnsMountainDto() {
+    void getMountainById_success() {
         when(mountainRepository.findById(anyLong())).thenReturn(Optional.of(mountain));
         when(mountainResponseDtoMapper.toDto(mountain)).thenReturn(dto);
 
         MountainResponseDto result = mountainService.findMountainById(anyLong());
 
         assertNotNull(result);
-        System.out.println(result.getDescription());
         verify(mountainRepository).findById(anyLong());
         verify(mountainResponseDtoMapper).toDto(mountain);
     }
 
     @Test
-    void findMountainById_throwsExceptionWhenNotFound() {
+    void getMountainById_throwsExceptionWhenNotFound() {
         when(mountainRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ServiceLogicException.class, () -> mountainService.findMountainById(anyLong()));

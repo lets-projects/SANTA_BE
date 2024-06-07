@@ -526,27 +526,6 @@ public class UserServiceImplTest {
         assertThrows(ServiceLogicException.class, () -> userService.updateUser(email, requestDto));
     }
 
-//    @Test
-//    void testFindAllUserMountains() {
-//        // Given
-//        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").descending());
-//        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-//        when(userRepository.findUserMountainsByUserId(any(Long.class), any(Pageable.class)))
-//                .thenReturn(new PageImpl<>(Arrays.asList(userMountain)));
-//        when(userMountainResponseDtoMapper.toDto(any(UserMountain.class))).thenReturn(userMountainresponseDto);
-//
-//        // When
-//        Page<UserMountainResponseDto> result = userService.findAllUserMountains(user.getEmail(), pageable);
-//
-//        // Then
-//        assertNotNull(result);
-//        assertEquals(1, result.getTotalElements());
-//        assertEquals(userMountainresponseDto, result.getContent().get(0));
-//
-//        verify(userRepository, times(1)).findByEmail(user.getEmail());
-//        verify(userRepository, times(1)).findUserMountainsByUserId(user.getId(), pageable);
-//        verify(userMountainResponseDtoMapper, times(1)).toDto(userMountain);
-//    }
 
     @Test
     void testFindAllUserMountains() {
